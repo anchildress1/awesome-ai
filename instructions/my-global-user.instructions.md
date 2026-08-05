@@ -97,14 +97,15 @@ applyTo: "**"
 
 1. Make code changes
 2. Run validation loop
-3. Update commit.tmp (only when user requests commit message)
+3. Commit (only when the user requests it)
 4. Return to user
 
-### commit.tmp Handling (Deterministic)
+### Commit Message Handling (Deterministic)
 
-- If `commit.tmp` exists and you are writing/updating it, you MUST attempt to load and follow `prompts/generate-commit-message.prompt.md` from the repo or users global prompts.
+- Commit messages come from the `generate-commit-message` skill. It derives the message from the diff and creates the signed commit directly—no intermediate draft file.
 - Evidence MUST come from an actual diff (staged first, then working tree); never infer from memory.
-- If the prompt can’t be retrieved safely, update `commit.tmp` using only the conventions existing in `commit.tmp` + only changes made that turn.
+- If the skill can’t be retrieved safely, compose the message inline following Conventional Commits v1.0.0 and the repo’s existing `git log` conventions, then commit with `git commit -S -F -`.
+- Never stage on the user’s behalf. What is staged defines the commit.
 
 ---
 
