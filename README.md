@@ -120,8 +120,9 @@ Skills are small, reusable playbooks you can hand to an agent when you want cons
 | [`eslint-plugin-configuring`](./skills/eslint-plugin-configuring/SKILL.md) | [![Status: Draft (pink badge)](https://img.shields.io/badge/status-draft-F72585.svg)](./docs/skills/eslint-plugin-configuring-docs.md) | Generate or update ESLint plugins with dual config support (v8 legacy and v9 flat) | I needed to throw one together anyway, so why not do this first? |
 | [`test-writer`](./skills/test-writer/SKILL.md) | [![Status: Ready (green badge)](https://img.shields.io/badge/status-ready-007F5F.svg)](./docs/skills/test-writer-docs.md) | Write, extend, or audit tests in any language, any framework, any repo | No `.skip`, no lowered thresholds, no copy-paste bodies. Every path, every time. |
 | [`readme-generator`](./skills/readme-generator/SKILL.md) | [![Status: Ready (green badge)](https://img.shields.io/badge/status-ready-007F5F.svg)](./docs/skills/readme-generator-docs.md) | Generate, audit, or improve a project README following a 15-section structure with Mermaid diagrams | Intent-driven section selection. No generic filler. No badge decoration. |
+| [`pr-comment-review`](./skills/pr-comment-review/SKILL.md) | [![Status: Polish (purple badge)](https://img.shields.io/badge/status-polish-9B5DE5.svg)](./docs/skills/pr-comment-review-docs.md) | Audit and remediate an open PR's review feedback until every thread has an outcome | Fix or a real reason. "Nitpick" isn't a reason. Never pushes on its own. |
 
 > ⭐️ If one of these guys helped you, leave a star!
 > If it failed spectacularly, tell me. Either way, I’ll learn something — and so will the bot.
 
-<small>Generated with a highly suspicious amount of help from ChatGPT, directed by Ashley Childress.</small>
+<small>Generated with a highly suspicious amount of help from ChatGPT and Claude, directed by Ashley Childress.</small>
