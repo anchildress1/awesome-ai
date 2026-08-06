@@ -97,8 +97,7 @@ The skill matches on exact login. These are what actually appear in the API:
 
 ## Verify Your Setup ✅
 
-Has each bot *ever* reviewed anything in this repo? A `0` means not installed here — which is a
-real finding, not a fluke of one PR:
+Has each bot *ever* reviewed anything in this repo?
 
 ```bash
 gh api -X GET search/issues \
@@ -111,6 +110,12 @@ gh api -X GET search/issues \
 > [!WARNING]
 > `-X GET` is required. Passing `-f` without it makes `gh` send a POST, and the search endpoint
 > answers with a bare `404` that looks like a missing repo.
+
+> [!IMPORTANT]
+> A `0` means **no prior comments**, not "not installed." A freshly installed app returns the same
+> `0` until its first eligible PR — this repo returned `0` for Codex right up until Codex reviewed
+> [#20](https://github.com/anchildress1/awesome-github-copilot/pull/20). To check installation for
+> real, use `gh api repos/{owner}/{repo}/installation` or the repo's settings.
 
 ---
 

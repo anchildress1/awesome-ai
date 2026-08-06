@@ -1,4 +1,5 @@
 ---
+status: polish
 name: pr-comment-review
 description: >
   Audit and remediate an open GitHub PR's review feedback: verify Copilot and Codex actually
@@ -30,8 +31,12 @@ Given a number/URL, use it. Otherwise:
 gh pr view --json number,title,body,url,isDraft,baseRefName,headRefName
 ```
 
-`owner`/`repo` from `git remote -v` (origin). No open PR for the branch → say so and stop. Don't
-guess.
+`owner`/`repo` come from whichever identified the PR. A supplied URL carries its own
+`owner`/`repo` — parse them from it, because the PR may live in a repo the current checkout isn't
+(same number, different repo, and every read and reply would land on a stranger's PR). Fall back
+to `git remote -v` (origin) only for a bare number or the current-branch case.
+
+No open PR for the branch → say so and stop. Don't guess.
 
 ## 2. Confirm both required bots reviewed
 
@@ -40,20 +45,34 @@ guess.
 
 ```
 pull_request_read(method="get_reviews" | "get_comments", owner, repo, pullNumber)
-# gh api repos/{owner}/{repo}/pulls/{pr}/reviews  |  .../issues/{pr}/comments
+# gh api --paginate repos/{owner}/{repo}/pulls/{pr}/reviews  |  .../issues/{pr}/comments
 ```
 
-A missing bot is a diagnosis, not a shrug. Determine which:
+Read every page before concluding anyone is absent. `gh api` returns one page by default, so a
+bot that reviewed after 30 other events looks missing without `--paginate`; the MCP tool pages
+via `perPage` + the `after` cursor from `pageInfo`.
 
-- **Draft PR** — both bots skip drafts. Check `isDraft`.
+A missing bot is a diagnosis, not a shrug. Diagnose per bot — they have independent
+configurations, so one explanation rarely covers both:
+
+- **Draft PR** — check `isDraft`. This only explains Copilot if the repo has *not* enabled
+  **Review draft pull requests** in its ruleset; with that on, a draft is no explanation at all
+  and you need a different cause.
 - **Pending** — last push minutes ago; report the timestamp instead of "absent".
-- **Not installed on this repo** — check whether it ever commented on any PR here:
+- **No prior review history** — check whether the bot has ever commented on any PR here:
+
   ```bash
   gh api -X GET search/issues -f q="repo:{owner}/{repo} commenter:app/{bot-slug}" --jq '.total_count'
   ```
+
   `-X GET` is required — `-f` alone makes `gh` POST, and search answers with a bare `404` that
-  reads like a missing repo. `{bot-slug}` is the login without the `[bot]` suffix. `0` is a real
-  finding ("Codex isn't installed here").
+  reads like a missing repo. `{bot-slug}` is the login without the `[bot]` suffix.
+
+  Report a `0` as **"no prior comments in this repo"** — never as "not installed". A freshly
+  installed app, or one enabled before its first eligible PR, returns exactly the same `0`, and
+  calling that an installation problem sends the user to fix something that isn't broken.
+  Upgrade to "not installed" only with direct evidence: the app absent from
+  `gh api repos/{owner}/{repo}/installation` or from the repo's settings.
 - **Other** — state the evidence. Never "reason unclear"; if inconclusive, say what you checked
   and what came back, so the user doesn't re-derive it.
 
@@ -63,8 +82,22 @@ A missing bot is a diagnosis, not a shrug. Determine which:
 pull_request_read(method="get_review_comments", owner, repo, pullNumber)
 ```
 
-Covers all sources — both bots, humans, SonarQube, Dependabot. For each thread with
-`isResolved == false`:
+Returns `review_threads[]`, each with `is_resolved` / `is_outdated` / `is_collapsed` and its
+comments — snake\_case in the payload, even though the tool description spells them camelCase.
+Page with `perPage` + `after` until `pageInfo.hasNextPage` is false; an unresolved thread on page
+two counts exactly as much as one on page one.
+
+The `gh api` fallback can't do this: REST `/pulls/{pr}/comments` returns flat comment records with
+no thread resolution state. If you're on the fallback path, get it from GraphQL:
+
+```bash
+gh api graphql -f query='query($o:String!,$r:String!,$n:Int!){repository(owner:$o,name:$r){
+  pullRequest(number:$n){reviewThreads(first:100){nodes{id isResolved isOutdated
+  comments(first:100){nodes{databaseId author{login} path line body}}}}}}}' \
+  -f o={owner} -f r={repo} -F n={pr}
+```
+
+Covers all sources — both bots, humans, SonarQube, Dependabot. For each unresolved thread:
 
 1. Read the finding against the **current** code at that location, not the quoted hunk — code
    moves.
