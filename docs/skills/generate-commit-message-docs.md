@@ -108,16 +108,17 @@ Exactly one tier, based on the diff:
 | Trailer | Means |
 | - | - |
 | `Generated-by` | AI wrote the majority of changed lines |
-| `Co-developed-by` | Roughly half-and-half |
+| `Co-authored-by` | Roughly half-and-half |
 | `Assisted-by` | Minor but real AI edits |
 | `Commit-generated-by` | AI only wrote the commit message |
 
 Ambiguous cases default to crediting the human more.
 
 > [!NOTE]
-> The half-and-half tier is `Co-developed-by`, not GitHub's `Co-authored-by`. GitHub resolves
-> `Co-authored-by` against real accounts and renders an avatar — pointing that at a `noreply@` AI
-> address produces a broken attribution. The other three trailers are inert by design.
+> `Co-authored-by` is deliberate and matches the convention used across these repos. It's the one
+> trailer GitHub parses and renders on the commit — the other three are custom trailers git carries
+> verbatim. Don't let a tool "correct" it to a variant spelling; that silently drops the
+> attribution GitHub would have shown.
 
 ---
 

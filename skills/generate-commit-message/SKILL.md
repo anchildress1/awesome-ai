@@ -91,15 +91,15 @@ Exactly one, from diff hunks + this session:
 | AI share of the work | Trailer |
 | - | - |
 | Majority | `Generated-by` |
-| Roughly half | `Co-developed-by` |
+| Roughly half | `Co-authored-by` |
 | Minor assist | `Assisted-by` |
 | Only wrote this message | `Commit-generated-by` |
 
 Uncertain → pick the tier that credits the human more.
 
-Use `Co-developed-by`, not `Co-authored-by`. GitHub resolves `Co-authored-by` to a real account
-and renders an avatar on the commit; a `noreply@` AI address makes that a dangling attribution.
-The other three tiers are inert custom trailers.
+`Co-authored-by` is the one tier GitHub actually parses and renders on the commit, which is the
+point of it — don't substitute a variant spelling. The other three are custom trailers that git
+carries verbatim.
 
 ## 5. Compose and validate
 
