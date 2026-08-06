@@ -103,7 +103,7 @@ applyTo: "**"
 ### Commit Message Handling (Deterministic)
 
 - Commit messages come from the `generate-commit-message` skill. It derives the message from the diff and creates the signed commit directly—no intermediate draft file.
-- Evidence MUST come from an actual diff (staged first, then working tree); never infer from memory.
+- Evidence MUST come from the actual staged diff; never infer from memory, and never from unstaged edits the commit won’t contain.
 - If the skill can’t be retrieved safely, compose the message inline following Conventional Commits v1.0.0 and the repo’s existing `git log` conventions, then commit with `git commit -S -F -`.
 - Never stage on the user’s behalf. What is staged defines the commit.
 

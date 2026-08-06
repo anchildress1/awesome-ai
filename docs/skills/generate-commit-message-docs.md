@@ -14,7 +14,7 @@ Skill source: [`skills/generate-commit-message/SKILL.md`](../../skills/generate-
 
 ## What It Does 🛠️
 
-1. Reads the staged diff (working tree only as a fallback)
+1. Reads the staged diff — only the staged diff, since that's exactly what the commit will contain
 2. Infers type, scope, and body strictly from hunks — not from chat history
 3. Picks one AI-attribution trailer based on who actually did the work
 4. Validates against commitlint rules *and* the repo's own config

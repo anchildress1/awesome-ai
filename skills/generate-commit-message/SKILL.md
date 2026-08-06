@@ -1,12 +1,15 @@
 ---
+status: check
 name: generate-commit-message
 description: >
-  Derive one Conventional Commits v1.0.0 message from the git diff and create the signed commit
-  directly. Trigger on "commit this", "commit these changes", "/commit", "go ahead and commit",
-  "make the commit", "git commit", "write a commit message", "what should the commit message be"
-  — and on any request to record staged work in git. Enforces the type enum, 72-char subject,
-  100-char body/footer lines, and a required AI-attribution trailer, so the result passes
-  commitlint on the first try.
+  Derive one Conventional Commits v1.0.0 message from the staged diff and create the signed commit
+  directly. Trigger only on explicit intent to commit: "commit this", "commit these changes",
+  "/commit", "go ahead and commit", "make the commit", "git commit", or a confirmation like "yes,
+  commit it". Enforces the type enum, 72-char subject, 100-char body/footer lines, and a required
+  AI-attribution trailer, so the result passes commitlint on the first try. Do NOT trigger on
+  message-only questions ("write a commit message", "what should the commit message be") — this
+  skill's only output path is a real commit, and answering those with one records work the user
+  merely asked to preview.
 argument-hint: "optional: JIRA-123 or issue key/scope hint"
 allowed-tools: Bash, Read
 disable-model-invocation: false
@@ -52,12 +55,15 @@ correct; a made-up one is noise. The diff informs type and subject, never scope.
 ## 2. Acquire diff
 
 ```bash
-git --no-pager diff --cached      # preferred
-git --no-pager diff               # fallback, only if staged is empty
+git --no-pager diff --cached
 ```
 
-Both empty → abort. Derive everything from hunks only: chat history, prior commits, and memory
-are not evidence of what this diff changes.
+Empty → abort. There is no working-tree fallback: `git commit` records the index, so a message
+derived from unstaged edits would describe changes the commit doesn't contain — and the commit
+would fail anyway with nothing staged.
+
+Derive everything from hunks only: chat history, prior commits, and memory are not evidence of
+what this diff changes.
 
 ## 3. Pick type
 
