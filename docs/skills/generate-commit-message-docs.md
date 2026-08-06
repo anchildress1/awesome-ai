@@ -34,8 +34,9 @@ untracked file you'll find three weeks later.
 
 > [!WARNING]
 > Don't reach for this one when you only want to *see* a message. It has no preview mode — every
-> path ends in a commit. Use [`prompts/generate-commit-message.prompt.md`](../prompts/generate-commit-message-docs.md)
-> for the draft-to-file variant.
+> path ends in a commit. For the draft-to-file variant, use
+> [`generate-commit-message.prompt.md`](../../prompts/generate-commit-message.prompt.md)
+> ([docs](../prompts/generate-commit-message-docs.md)).
 
 > [!IMPORTANT]
 > The skill never runs `git add`. What you stage is what gets committed — that boundary is what
