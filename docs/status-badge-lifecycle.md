@@ -12,6 +12,6 @@ Each mode, prompt, or instruction earns a status badge (find the badge legend ri
 | `Deprecated` | ![Deprecated - Gray](https://img.shields.io/badge/status-deprecated-A0A0A0.svg) | End of life. Replaced by something better. Check the docs for migration path. |
 | `Removed` | ![Removed - Dark Gray](https://img.shields.io/badge/status-removed-4B4B4B.svg) | Fully removed, no longer supported. Exists here only for historical context. |
 
-> [!Note]
+> [!NOTE]
 >
 > Badges always live in the README, never in the actual ~~chat mode~~ agent or instruction file. If you find a stray badge in the code... you’ve probably entered the Upside Down.
