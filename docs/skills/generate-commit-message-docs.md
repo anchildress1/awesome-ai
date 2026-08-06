@@ -30,7 +30,12 @@ untracked file you'll find three weeks later.
 
 1. Make your changes
 2. **Stage them yourself** — this is the important one
-3. Say `commit this`, `/generate-commit-message`, or `write a commit message`
+3. Say `commit this`, `go ahead and commit`, or `/generate-commit-message`
+
+> [!WARNING]
+> Don't reach for this one when you only want to *see* a message. It has no preview mode — every
+> path ends in a commit. Use [`prompts/generate-commit-message.prompt.md`](../prompts/generate-commit-message-docs.md)
+> for the draft-to-file variant.
 
 > [!IMPORTANT]
 > The skill never runs `git add`. What you stage is what gets committed — that boundary is what
