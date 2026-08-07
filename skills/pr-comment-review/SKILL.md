@@ -83,7 +83,7 @@ pull_request_read(method="get_review_comments", owner, repo, pullNumber)
 ```
 
 Returns `review_threads[]`, each with `is_resolved` / `is_outdated` / `is_collapsed` and its
-comments — snake\_case in the payload, even though the tool description spells them camelCase.
+comments — snake_case in the payload, even though the tool description spells them camelCase.
 Page with `perPage` + `after` until `pageInfo.hasNextPage` is false; an unresolved thread on page
 two counts exactly as much as one on page one.
 

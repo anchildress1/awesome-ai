@@ -39,7 +39,7 @@
 
 {{Pick one of the two layouts below. Delete the other.}}
 
-**Table layout (best for \~3-7 features):**
+**Table layout (best for ~3-7 features):**
 
 | Feature | Description |
 | - | - |

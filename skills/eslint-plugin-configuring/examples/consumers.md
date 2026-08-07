@@ -17,7 +17,7 @@ export default defineConfig([
 
 ---
 
-## ESLint v8 Legacy Consumer (legacy-\* strategy)
+## ESLint v8 Legacy Consumer (legacy-* strategy)
 
 ```jsonc
 {

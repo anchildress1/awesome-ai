@@ -38,7 +38,7 @@ Deeper notes on each of the 15 sections. Read this when drafting a section that 
 
 **Include:** linked anchors to every `##` section.
 
-**Skip when:** the README is shorter than \~5 sections. A TOC for 4 items is noise.
+**Skip when:** the README is shorter than ~5 sections. A TOC for 4 items is noise.
 
 **GitHub note:** GitHub auto-generates a TOC dropdown from the headings, so the manual TOC is partially redundant on github.com — but it still serves people reading the file in IDEs, code search results, or rendered docs sites. Keep it.
 
@@ -154,12 +154,12 @@ src/
 
 **Purpose:** tell readers what they're allowed to do with the code — and, more importantly, what they're not.
 
-**Include:** license name (linked to the LICENSE file) **plus a one- or two-sentence plain-English summary of the actual constraints.** The summary is the load-bearing part. A bare "Licensed under X — see \[LICENSE] for details" is dead weight: the link already says that, and readers will pattern-match "repo on GitHub" → "MIT-shaped permissions" and assume things you never granted.
+**Include:** license name (linked to the LICENSE file) **plus a one- or two-sentence plain-English summary of the actual constraints.** The summary is the load-bearing part. A bare "Licensed under X — see [LICENSE] for details" is dead weight: the link already says that, and readers will pattern-match "repo on GitHub" → "MIT-shaped permissions" and assume things you never granted.
 
 **Don't:**
 
 - paste the full license text into the README — the LICENSE file is canonical
-- ship the dry "This project is licensed under X — see \[LICENSE] for details" line; the prose has to outwork the link
+- ship the dry "This project is licensed under X — see [LICENSE] for details" line; the prose has to outwork the link
 - soften the constraints to sound friendlier — if commercial use is restricted, say so plainly
 
 **Tone:** match the rest of the README. For projects following the changelog-writer voice (cheeky, dry, narrative — see `~/.claude/skills/changelog-writer/SKILL.md`), the License section gets that same edge. It should read like a doorman, not a EULA.
