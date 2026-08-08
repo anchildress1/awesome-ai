@@ -1,6 +1,11 @@
 # awesome-github-copilot 🔭
 
-[![wakatime](https://wakatime.com/badge/github/anchildress1/awesome-github-copilot.svg)](https://wakatime.com/badge/github/anchildress1/awesome-github-copilot) [![GitHub stars](https://img.shields.io/github/stars/anchildress1/awesome-github-copilot.svg?style=social\&label=Stars)](https://github.com/anchildress1/awesome-github-copilot/stargazers) [![Open Issues](https://img.shields.io/github/issues/anchildress1/awesome-github-copilot.svg)](https://github.com/anchildress1/awesome-github-copilot/issues) [![Last commit](https://img.shields.io/github/last-commit/anchildress1/awesome-github-copilot.svg)](https://github.com/anchildress1/awesome-github-copilot/commits/main) [![Node](https://img.shields.io/badge/node-24.x-green.svg)](https://nodejs.org/) [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](./LICENSE) [![Made with GitHub Copilot](https://img.shields.io/badge/Made%20with-GitHub%20Copilot-blue?logo=github-copilot\&logoColor=white)](https://github.com/features/copilot) [![Made with ChatGPT](https://img.shields.io/badge/Made%20with-ChatGPT-239D7A?logo=github-copilot\&logoColor=white)](https://github.com/features/copilot)
+[![GitHub stars](https://img.shields.io/github/stars/anchildress1/awesome-github-copilot.svg?style=social\&label=Stars)](https://github.com/anchildress1/awesome-github-copilot/stargazers) [![wakatime](https://wakatime.com/badge/github/anchildress1/awesome-github-copilot.svg)](https://wakatime.com/badge/github/anchildress1/awesome-github-copilot) [![Open Issues](https://img.shields.io/github/issues/anchildress1/awesome-github-copilot.svg)](https://github.com/anchildress1/awesome-github-copilot/issues) [![Last commit](https://img.shields.io/github/last-commit/anchildress1/awesome-github-copilot.svg)](https://github.com/anchildress1/awesome-github-copilot/commits/main) [![Node](https://img.shields.io/badge/node-24.x-green.svg)](https://nodejs.org/) [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](./LICENSE)
+
+[![Made with GitHub Copilot](https://img.shields.io/badge/Made%20with-GitHub%20Copilot-6E40C9.svg)](https://github.com/features/copilot) [![Made with ChatGPT](https://img.shields.io/badge/Made%20with-ChatGPT-10A37F.svg)](https://chatgpt.com) [![Made with Claude](https://img.shields.io/badge/Made%20with-Claude-D97757.svg)](https://claude.com/claude-code)
+
+> ⭐️ If one of these guys helped you, leave a star!
+> If it failed spectacularly, tell me. Either way, I’ll learn something — and so will the bot.
 
 > [!NOTE]
 > So my original idea of making all this directly accessible through a Copilot Extension hit a wall — a few walls, actually.
@@ -16,7 +21,7 @@
 
 Welcome to my collection of **Custom Instructions, Prompts, and Agents (formerly Chat Modes)** — your one-stop shop for uniquely crafted, slightly over-caffeinated GitHub Copilot personalities. Built for creative chaos, workflow upgrades, and the occasional emergency refactor.
 
-Each mode here is handcrafted by me, with ChatGPT running background triage and Copilot chiming in like a backseat developer who just learned linting. I borrow inspiration from others (and always credit), but every piece is reshaped with my own twist.
+Each mode here is handcrafted by me, with ChatGPT running background triage, Copilot chiming in like a backseat developer who just learned linting, and Claude fact-checking all of us at 2am. I borrow inspiration from others (and always credit), but every piece is reshaped with my own twist.
 
 Each entry is labeled by **status**, so you’ll know if you’re deploying a seasoned attending or a rookie who still thinks “merge conflict” sounds medical. Badges tell you how stable something is; docs tell you how to use it.
 
@@ -74,8 +79,6 @@ This is where the magic lives — reusable, testable instructions that behave li
 | `format-conventional-commit` | ![Removed - Dark Gray](https://img.shields.io/badge/status-removed-4B4B4B.svg) | | Modern Copilot models handle this natively |
 | `analyze-git-diff` | ![Removed - Dark Gray](https://img.shields.io/badge/status-removed-4B4B4B.svg) | | No longer needed with newer agents |
 
-> 🦄 If anything helps bring order to your chaos, leave a star!
-
 ---
 
 ## Prompts 🧑‍🚀
@@ -86,7 +89,7 @@ Each one knows which tools to summon (`#changes`, `#editFiles`, `#runInTerminal`
 
 | Name | Status | Purpose | Notes |
 | - | :-: | - | - |
-| [`generate-commit-message`](./prompts/generate-commit-message.prompt.md) (v3) | [![Status: Polish (purple badge)](https://img.shields.io/badge/status-polish-9B5DE5.svg)](./docs/prompts/generate-commit-message-docs.md) | One-shot commit message generator with RAI footer | Responsible automation, step one. Zero orchestration drama. |
+| [`generate-commit-message`](./prompts/generate-commit-message.prompt.md) (v3) | [![Status: Polish (purple badge)](https://img.shields.io/badge/status-polish-9B5DE5.svg)](./docs/prompts/generate-commit-message-docs.md) | One-shot commit message generator with RAI footer — **drafts to `commit.tmp`** for review | Responsible automation, step one. Zero orchestration drama. <br />Want it to commit for you? Use the [skill](./skills/generate-commit-message/SKILL.md) instead. |
 | `get-current-timestamp` | ![Removed - Dark Gray](https://img.shields.io/badge/status-removed-4B4B4B.svg) | Returns a standard timestamp | Newer Copilot models handle this automatically |
 | `generate-commit-message` (v1) | ![Removed - Dark Gray](https://img.shields.io/badge/status-removed-4B4B4B.svg) | Too noisy for new models | Rewritten in v2 for sanity and silence |
 
@@ -116,13 +119,10 @@ Skills are small, reusable playbooks you can hand to an agent when you want cons
 | Name | Status | Purpose | Notes |
 | - | :-: | - | - |
 | [`changelog-rewriter`](./skills/changelog-writer/SKILL.md) | [![Status: Draft (pink badge)](https://img.shields.io/badge/status-draft-F72585.svg)](./docs/skills/changelog-rewriter-docs.md) | Rewrite `CHANGELOG.md` entries into the repo’s dry, narrative style (with formatting guardrails) | No commit/PR archaeology. No corporate tone. Just readable history. |
-| [`generate-commit-message`](./skills/generate-commit-message/SKILL.md) | [![Status: Check (blue badge)](https://img.shields.io/badge/status-check-3A86FF.svg)](./docs/skills/generate-commit-message-docs.md) | Generate a single Conventional Commit message from diff evidence | Deterministic formatting, no git history mutation, AI attribution included. |
+| [`generate-commit-message`](./skills/generate-commit-message/SKILL.md) | [![Status: Check (blue badge)](https://img.shields.io/badge/status-check-3A86FF.svg)](./docs/skills/generate-commit-message-docs.md) | Generate a Conventional Commit message from diff evidence and **make the signed commit** | Deterministic formatting, commits only what you staged, never pushes, AI attribution included. |
 | [`eslint-plugin-configuring`](./skills/eslint-plugin-configuring/SKILL.md) | [![Status: Draft (pink badge)](https://img.shields.io/badge/status-draft-F72585.svg)](./docs/skills/eslint-plugin-configuring-docs.md) | Generate or update ESLint plugins with dual config support (v8 legacy and v9 flat) | I needed to throw one together anyway, so why not do this first? |
 | [`test-writer`](./skills/test-writer/SKILL.md) | [![Status: Ready (green badge)](https://img.shields.io/badge/status-ready-007F5F.svg)](./docs/skills/test-writer-docs.md) | Write, extend, or audit tests in any language, any framework, any repo | No `.skip`, no lowered thresholds, no copy-paste bodies. Every path, every time. |
 | [`readme-generator`](./skills/readme-generator/SKILL.md) | [![Status: Ready (green badge)](https://img.shields.io/badge/status-ready-007F5F.svg)](./docs/skills/readme-generator-docs.md) | Generate, audit, or improve a project README following a 15-section structure with Mermaid diagrams | Intent-driven section selection. No generic filler. No badge decoration. |
 | [`pr-comment-review`](./skills/pr-comment-review/SKILL.md) | [![Status: Polish (purple badge)](https://img.shields.io/badge/status-polish-9B5DE5.svg)](./docs/skills/pr-comment-review-docs.md) | Audit and remediate an open PR's review feedback until every thread has an outcome | Fix or a real reason. "Nitpick" isn't a reason. Never pushes on its own. |
 
-> ⭐️ If one of these guys helped you, leave a star!
-> If it failed spectacularly, tell me. Either way, I’ll learn something — and so will the bot.
-
-<small>Generated with a highly suspicious amount of help from ChatGPT and Claude, directed by Ashley Childress.</small>
+<small>Generated with a highly suspicious amount of help from ChatGPT, GitHub Copilot, and Claude — directed, corrected, and occasionally overruled by Ashley Childress.</small>

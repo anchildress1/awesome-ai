@@ -1,4 +1,5 @@
 ---
+status: ready
 name: test-writer
 description: >
   Write, extend, or review tests in any codebase. Use this skill whenever the user asks

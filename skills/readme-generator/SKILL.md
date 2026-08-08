@@ -1,4 +1,5 @@
 ---
+status: ready
 name: readme-generator
 description: Generate, audit, or improve a project README following a 15-section structure (Title, Table of Contents, About, Features, Tech Stack, Architecture, Project Structure, Getting Started, Configuration, Security, How to Contribute, What's Next, License, Acknowledgements, Author) with Mermaid diagrams for architecture and flows. Use this skill whenever the user asks to "write a README", "create a README", "draft a README", "generate README.md", "scaffold project docs", "document this repo", "improve my README", "audit my README", "what should go in my README", or starts a new repository and needs documentation. Also trigger on phrases like "the README is bare", "this project has no docs", "fill in my README sections", or any request that produces or reviews a top-level repository README. The skill defaults to Mermaid for diagrams because it renders natively on GitHub, GitLab, Bitbucket, and most modern Markdown viewers — no external image hosting required.
 ---

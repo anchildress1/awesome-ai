@@ -14,6 +14,9 @@ tools: [
 
 Produce a conventional commit message from the highest-priority diff evidence and write it to `commit.tmp` exactly once per run.
 
+> [!NOTE]
+> This is the **draft-to-file** variant, for Copilot Chat and any flow where you want to read the message before committing. The [`generate-commit-message` skill](../skills/generate-commit-message/SKILL.md) is the **commit-directly** variant. Same rules, different endpoint — pick one per workflow rather than running both.
+
 ---
 
 ## Evidence Priority (STRICT)

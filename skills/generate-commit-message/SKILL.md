@@ -2,189 +2,106 @@
 status: check
 name: generate-commit-message
 description: >
-  Use this skill whenever you need to commit changes or generate a conventional commit message for user review.
+  Derive one Conventional Commits v1.0.0 message from the staged diff and create the signed commit
+  directly. Trigger only on explicit intent to commit: "commit this", "commit these changes",
+  "/commit", "go ahead and commit", "make the commit", "git commit", or a confirmation like "yes,
+  commit it". Enforces the type enum, 72-char subject, 100-char body/footer lines, and a required
+  AI-attribution trailer, so the result passes commitlint on the first try. Do NOT trigger on
+  message-only questions ("write a commit message", "what should the commit message be") — this
+  skill's only output path is a real commit, and answering those with one records work the user
+  merely asked to preview.
 argument-hint: "optional: JIRA-123 or issue key/scope hint"
-allowed-tools: Bash, Read, Write
+allowed-tools: Bash, Read
 disable-model-invocation: false
 user-invocable: true
 ---
 
-## Purpose
+Produce exactly one Conventional Commits v1.0.0 message from the diff, then commit it signed.
+The commit is the deliverable — no draft file, no staging, no push.
 
-Produce exactly one Conventional Commits v1.0.0 message derived strictly from the git diff. Output must pass `@commitlint/config-conventional` default rules out of the box (with one documented Jira-scope caveat).
+## Boundaries
 
-Two output modes (chosen by request intent + permission, see §"Output mode"):
+The only repo-mutating command permitted is `git commit -S`. Everything else is off-limits:
 
-- **Draft mode**: write the message to `commit.tmp`. No repo mutation.
-- **Commit mode**: write a signed commit using the message. No `commit.tmp` written on success.
+| Never | Why |
+| - | - |
+| `git add` / stage anything | Commit scope is the user's decision, already expressed by what's staged |
+| `git push`, `rebase`, `reset`, `commit --amend` | History mutation isn't this skill's job |
+| `--no-verify`, `--no-gpg-sign` | Hooks and signing must run |
+| Edit source, docs, or config | No formatters, lint fixes, refactors, or test runs |
+| Commit on `main`/`master` | Unless the user directed it **this turn** |
+| Omit the AI-attribution trailer | A message without it is a failed message |
 
-## Inputs
+## Abort conditions
 
-- Preferred: staged diff via `git --no-pager diff --cached`
-- Fallback: working tree diff via `git --no-pager diff`
+Stop and report; do not work around:
 
-## Output mode (commit vs. draft)
+- No staged diff → `nothing staged`. Do not stage on the user's behalf.
+- On `main`/`master` without explicit authorization this turn.
+- Diff changed between derivation and commit (see step 5).
 
-Pick **commit mode** only when ALL of these are true:
+## 1. Resolve scope
 
-1. **User intent is to commit**, not just draft. Triggering phrases include `commit this`, `commit these changes`, `/commit`, `go ahead and commit`, `make the commit`, `git commit`, or post-draft confirmations like `yes, commit it` / `looks good, commit`.
-2. **Permission is available**: a `git commit` invocation by this skill is allowed in the current session (Claude Code permission mode is `acceptEdits`/`bypassPermissions`, OR the user has granted the prompt). If the commit call gets blocked, see §"Commit blocked — fall back to draft".
-3. **State is committable**:
-   - There is a non-empty staged diff (`git --no-pager diff --cached` returns content).
-   - Current branch is not `main`/`master` UNLESS the user explicitly said to commit on that branch in this turn.
+Precedence, first match wins. Jira key regex `[A-Z][A-Z0-9]+-\d+`, matched case-insensitively,
+emitted uppercase:
 
-If any of those is false, use **draft mode**.
+1. User-provided key (request or `argument-hint`)
+2. Branch name — `git --no-pager rev-parse --abbrev-ref HEAD`
+3. None — omit the scope
 
-Phrases like `write a commit message`, `draft a commit message`, `what would the commit message be`, `save a commit message` always force draft mode regardless of permission.
+Never invent a keyword scope (`core`, `api`, `docs`) when no issue key exists. An absent scope is
+correct; a made-up one is noise. The diff informs type and subject, never scope.
 
-## Hard safety boundary
+## 2. Acquire diff
 
-- NEVER run `git add`, `git push`, `git rebase`, `git reset`, `git commit --amend`, or any other history-mutating command. The only repo-mutating command the skill may run is **`git commit -S`** in commit mode.
-- NEVER stage files. The skill commits only what is already staged. If nothing is staged, abort and tell the user.
-- NEVER modify repository files. Source/docs/config are off-limits — no formatters, lint fixes, refactors, test runs.
-- Allowed write target in draft mode: `commit.tmp` ONLY.
-- NEVER `--no-verify`, `--no-gpg-sign`, or any flag that bypasses hooks or signing.
-- NEVER infer scope from anything other than: user-provided key > branch name > existing `commit.tmp`.
-- AI attribution footer is MANDATORY in both modes. A commit message without attribution is a failure.
-- NEVER commit on `main`/`master` unless the user explicitly directed it this turn.
-
-## Conventional Commits v1.0.0 — rules this skill enforces
-
-Reference: <https://www.conventionalcommits.org/en/v1.0.0/>
-
-Format:
-
-```
-<type>[optional scope][!]: <subject>
-
-[optional body]
-
-[optional footer(s)]
+```bash
+git --no-pager diff --cached
 ```
 
-### Type
+Empty → abort. There is no working-tree fallback: `git commit` records the index, so a message
+derived from unstaged edits would describe changes the commit doesn't contain — and the commit
+would fail anyway with nothing staged.
 
-- MUST be one of (commitlint `type-enum` defaults):
-  `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, `test`
-- MUST be lowercase (`type-case: lower-case`).
-- MUST NOT be empty (`type-empty: never`).
-- `feat` MUST be used when adding a feature (SemVer MINOR).
-- `fix` MUST be used for bug fixes (SemVer PATCH).
+Derive everything from hunks only: chat history, prior commits, and memory are not evidence of
+what this diff changes.
 
-### Scope (optional)
+## 3. Pick type
 
-- Wrapped in parentheses, immediately after type: `feat(parser):`
-- commitlint default `scope-case: lower-case`.
-- **Jira-key exception**: this skill emits Jira keys uppercase (`feat(PROJ-123):`) per the scope precedence below. If your project uses Jira keys, override `scope-case` in your commitlint config:
+First match wins:
 
-  ```js
-  rules: { 'scope-case': [0] }
-  // or restrict to upper-case for Jira:
-  rules: { 'scope-case': [2, 'always', 'upper-case'] }
-  ```
+| Signal | Type |
+| - | - |
+| Public API removed, signature changed, config key dropped | breaking — add `!` and/or `BREAKING CHANGE:` |
+| New user-visible capability | `feat` |
+| Defect repair, no new surface | `fix` |
+| Faster, same behavior | `perf` |
+| Restructure, same behavior | `refactor` |
+| Whitespace, formatting, semicolons | `style` |
+| Tests only | `test` |
+| Docs, comments, JSDoc/KDoc only | `docs` |
+| `.github/workflows`, `.circleci`, CI config | `ci` |
+| Build system, deps, packaging | `build` |
+| Reverts a prior commit | `revert` |
+| Maintenance, no production impact | `chore` |
 
-### Subject
+## 4. Pick attribution tier
 
-- MUST follow the colon and a single space.
-- MUST NOT end with a period (`subject-full-stop: never`).
-- MUST NOT be empty (`subject-empty: never`).
-- MUST NOT be sentence-case, start-case, pascal-case, or upper-case (`subject-case: never [...]`). Lowercase or mixed lowercase/identifier-case is fine.
-- MUST be ≤ 72 characters (stricter than commitlint default of 100; matches kernel/git convention).
-- Imperative, present tense, active voice.
+Exactly one, from diff hunks + this session:
 
-### Body (optional)
+| AI share of the work | Trailer |
+| - | - |
+| Majority | `Generated-by` |
+| Roughly half | `Co-authored-by` |
+| Minor assist | `Assisted-by` |
+| Only wrote this message | `Commit-generated-by` |
 
-- MUST be preceded by exactly one blank line after the subject.
-- Lines ≤ 100 characters (matches `body-max-line-length` default).
-- Bullets are single-line only; no wrapping inside a bullet.
-- Explain *what* changed and *why*, not *how*. Avoid listing files; group changes.
+Uncertain → pick the tier that credits the human more.
 
-### Breaking changes
+`Co-authored-by` is the one tier GitHub actually parses and renders on the commit, which is the
+point of it — don't substitute a variant spelling. The other three are custom trailers that git
+carries verbatim.
 
-Two forms, both valid per spec:
-
-1. **Bang in header** (terse): `feat(api)!: drop deprecated /v1 endpoint`
-2. **Footer trailer** (verbose): include `BREAKING CHANGE: <details>` (or `BREAKING-CHANGE:` — spec §16 makes the hyphen form synonymous).
-
-Use the `!` form when the body/footer already explains the break elsewhere or when no extra detail is required. Use the footer form when the user needs explicit migration steps. You may use both together.
-
-### Footers
-
-- MUST be preceded by exactly one blank line.
-- Each footer is a git trailer: `Token-Name: value` or `Token-Name #value`.
-- Tokens use `-` instead of spaces (e.g., `Reviewed-by`), except `BREAKING CHANGE` (which the spec exempts).
-- **Lines ≤ 100 characters** (matches `footer-max-line-length` default). If a footer value would exceed 100 chars, fold it onto continuation lines with a leading space (git trailer continuation), or shorten the prose. Do not let any line exceed 100.
-- Common trailers:
-  - `Refs: PROJ-123`
-  - `Closes #42`
-  - `BREAKING CHANGE: <migration note>`
-  - AI attribution (see below)
-- PROHIBITED in this skill: `Signed-off-by` (out of scope; user must add manually if DCO-required).
-
-## Deterministic workflow
-
-### 0) Determine commit scope (issue-key precedence)
-
-Goal: choose an optional scope value (prefer a Jira-style key) with this precedence:
-
-1. **User-provided** Jira key / issue key (explicit in request or `argument-hint`)
-2. **Branch name** key (from current branch)
-3. **Existing `commit.tmp`** scope (if already present)
-4. **None** (omit scope)
-
-Rules:
-
-- Jira key regex (case-insensitive match; normalize to uppercase in output):
-  - `[A-Z][A-Z0-9]+-\d+`
-- If multiple keys are found, use the first match by precedence.
-- Do not invent a scope keyword (like `docs`/`core`) when no issue key exists. Omit scope.
-
-Steps:
-
-1. Extract issue key from user input / argument hint (if present).
-2. Else run `git --no-pager rev-parse --abbrev-ref HEAD` and extract the first matching issue key.
-3. Else, if `commit.tmp` exists, read line 1 and reuse a scope matching the Jira regex.
-4. Else scope is empty.
-
-### 1) Acquire diff
-
-1. Run `git --no-pager diff --cached`.
-2. If empty, run `git --no-pager diff`.
-3. If both empty or error, stop and report: unable to generate commit message (no diff).
-
-### 2) Derive intent (diff-only)
-
-Infer `<type>`, optional `(scope)`, breaking-change indicator, and subject/body strictly from diff hunks. Do not use chat history, prior commits, or memory to decide what changed.
-
-Type heuristics (in order; first match wins):
-
-- Public API removed / signature changed / config key dropped → likely breaking. Add `!` or `BREAKING CHANGE:` footer.
-- New user-visible feature added → `feat`.
-- Bug-fix only (defect repair, no new surface) → `fix`.
-- Performance work without behavior change → `perf`.
-- Code restructure, no behavior change → `refactor`.
-- Whitespace, formatting, semicolons → `style`.
-- Tests-only changes → `test`.
-- Docs-only changes (README, comments, KDoc, JSDoc) → `docs`.
-- CI config (.github/workflows, .circleci, etc.) → `ci`.
-- Build system, deps, packaging → `build`.
-- Reverts a prior commit → `revert`.
-- Maintenance with no production-code impact → `chore`.
-
-Scope is determined by §0 only — diff may inform type and subject, never scope.
-
-### 3) Estimate AI contribution (graduated attribution)
-
-Pick exactly one tier from diff hunks + session memory only:
-
-- **Majority** of work AI-driven → `Generated-by`
-- **Roughly half** AI / half human → `Co-authored-by`
-- **Minor** AI assist (small edits, suggestions) → `Assisted-by`
-- **Trivial** (just generated this commit message) → `Commit-generated-by`
-
-If uncertain, default to crediting the human (pick the less-crediting tier).
-
-### 4) Compose message
+## 5. Compose and validate
 
 ```
 <type>[(<scope>)][!]: <subject>
@@ -192,121 +109,65 @@ If uncertain, default to crediting the human (pick the less-crediting tier).
 - <single-line bullet>
 - <single-line bullet>
 
-<footer(s)>
+<footers>
 ```
 
-Hard formatting rules:
+Format constraints — every one maps to a commitlint rule, so a violation is a hook failure, not a
+style opinion:
 
-- Subject line: ≤ 72 chars, no trailing period, allowed cases per `subject-case` above.
-- Body lines: ≤ 100 chars.
-- Exactly one blank line after subject.
-- Exactly one blank line before footers.
-- No other blank lines.
-- Body bullets are single-line only.
+- Subject ≤ 72 chars, no trailing period, imperative present tense. Not Title Case, sentence-case,
+  PascalCase, or UPPER — but real identifiers keep their casing (`OAuth2`, `JSDoc`, `API`)
+- Type lowercase, from the enum in step 3
+- Body and footer lines ≤ 100 chars; bullets never wrap
+- Exactly one blank line after the subject, exactly one before the footers, none elsewhere
+- Group changes and say *what* and *why*. File-by-file listings and *how* are wasted lines.
+  Quantify where it helps ("add 3 fixtures", "drop 412 LOC").
 
-Writing rules:
+Footer order, when present:
 
-- Imperative, present tense, active voice.
-- Group changes; avoid file-by-file listings.
-- Quantify when useful ("add 3 fixtures", "drop 412 LOC").
-- Explain *what* and *why*, never *how*.
+1. `Refs: PROJ-123` / `Closes #42`
+2. `BREAKING CHANGE: <incompatibility and required action>` — only when the `!` alone doesn't
+   tell the user what to do. Both forms together are valid.
+3. AI attribution — required, exactly one, from step 4.
 
-### 5) Footers
+Trailers use `-` for spaces (`Reviewed-by`); `BREAKING CHANGE` is the spec's one exemption. A
+footer too long to fit in 100 chars folds onto a continuation line with a leading space.
 
-Order, when present:
+**Match the repo before emitting.** Read `commitlint.config.js` (or `.commitlintrc*`) if present
+and honor overrides — `scope-case`, stricter lengths, a narrowed type enum. Then check
+`git --no-pager log -3` for trailers this repo actually uses (`Signed-off-by`, `Refs`) and mirror
+them. A message that passes the generic spec but trips this repo's hook is still a failure.
 
-1. **Issue refs** (if user-provided or branch-derived):
-   ```
-   Refs: PROJ-123
-   ```
-   Or `Closes #42` if a GitHub issue number was provided.
+Then verify before committing:
 
-2. **Breaking change** (only when user action is required and not fully captured by `!`):
-   ```
-   BREAKING CHANGE: <explicit incompatibility and required action>
-   ```
+- Header matches `^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([^)]+\))?!?: .+$`
+- No line over its limit; exactly one attribution trailer present
 
-3. **AI attribution** (REQUIRED, exactly one):
-   ```
-   <Attribution-Tier>: <YOUR_AI_NAME> <noreply@email.com>
-   ```
+Failing any check → regenerate. Never emit a non-conformant message.
 
-Prohibited:
+## 6. Re-check the diff
 
-- Never include `Signed-off-by`.
+Re-run the step 2 command immediately before committing. If it changed, the message describes
+work that no longer matches — re-derive from step 2. If the diff can't be re-read, say the
+message may be stale and proceed.
 
-### 6) Pre-output revalidation (staleness guard)
+## 7. Commit
 
-Immediately before writing `commit.tmp` OR running `git commit`:
+```bash
+git commit -S -F - <<'EOF'
+<full message including blank lines and footers>
+EOF
+```
 
-1. Re-run staged diff (then fallback diff if needed).
-2. If diff changed vs. what was used to draft, abort, re-derive, and regenerate.
-3. If diff cannot be re-run, warn output may be stale and proceed best-effort.
+`-F -` preserves blank lines and trailers exactly; `-m` with embedded newlines is where formatting
+gets mangled. Report the short SHA and subject.
 
-### 7) Validate format (both modes)
-
-Before any output, verify:
-
-- Header matches: `^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([^)]+\))?!?: .+$` and is ≤ 72 chars.
-- No body or footer line exceeds 100 chars.
-- Subject does not end with `.`.
-- Type is lowercase and in the enum above.
-- Exactly one valid AI-attribution footer is present.
-
-If any check fails, regenerate before output. Do not emit a non-conformant message.
-
-### 8) Output — choose by mode (see §"Output mode")
-
-**Draft mode**:
-
-- Write exactly one commit message to `commit.tmp` in the current working directory.
-- Do not write to any other file.
-- Do not run any git mutation.
-- Done.
-
-**Commit mode**:
-
-1. Re-confirm preconditions one more time:
-   - Staged diff is non-empty.
-   - Branch is not `main`/`master` (or user explicitly OK'd it).
-   - User intent is to commit, not just draft.
-
-2. Run the commit using a HEREDOC for proper formatting and `-S` for gpg signing:
-
-   ```bash
-   git commit -S -m "$(cat <<'EOF'
-   <full message body here, including blank lines and footers>
-   EOF
-   )"
-   ```
-
-3. Do NOT pass `--no-verify` or `--no-gpg-sign`. Hooks and signing must run.
-
-4. Do NOT stage anything. Commit only what is already staged.
-
-5. If commit succeeds: report the new commit's short SHA + subject. Do not write `commit.tmp`.
-
-6. If commit fails (hook rejection, permission denied, signing failure, etc.):
-   - Do NOT retry blindly.
-   - Do NOT amend.
-   - Save the message to `commit.tmp` so work isn't lost.
-   - Surface the exact failure output to the user along with a short, factual diagnosis (what failed; what they likely need to do).
-   - Stop. The model handles the underlying issue and re-invokes the skill.
-
-### 9) Commit blocked — fall back to draft
-
-If at any point during commit-mode the commit cannot be performed because:
-
-- Claude Code denied the `git commit` permission, OR
-- the staged diff is empty, OR
-- the branch is `main`/`master` and the user did not explicitly authorize, OR
-- a pre-commit hook or signature failed,
-
-…then write the message to `commit.tmp` instead and tell the user exactly why commit was skipped. Never silently downgrade — the user needs to know their commit didn't happen.
+On failure — hook rejection, denied permission, signing error — do not retry blindly and do not
+amend. Print the composed message in a fenced block so the work isn't lost, surface the exact
+failure output, and state what the user likely needs to do. Then stop; the underlying problem is
+theirs to resolve, not something to work around.
 
 ## Examples
-
-**1) Minor bug fix, no scope, AI assisted**
 
 ```
 fix: pin qs to 6.14.2 to address prototype-pollution vulnerability
@@ -317,20 +178,16 @@ fix: pin qs to 6.14.2 to address prototype-pollution vulnerability
 Assisted-by: Claude Haiku 4.5 <noreply@anthropic.com>
 ```
 
-**2) Feature with Jira scope, AI majority**
-
 ```
 feat(PROJ-123): add OAuth2 device-code flow to login
 
-- support polling token endpoint with backoff
-- surface user_code + verification_uri in CLI output
+- support polling the token endpoint with backoff
+- surface user_code and verification_uri in CLI output
 - cover happy-path and timeout in unit tests
 
 Refs: PROJ-123
-Generated-by: Claude Opus 4.7 <noreply@anthropic.com>
+Generated-by: Claude Opus 5 <noreply@anthropic.com>
 ```
-
-**3) Breaking change via `!`**
 
 ```
 feat(api)!: drop deprecated /v1 endpoints
@@ -338,17 +195,6 @@ feat(api)!: drop deprecated /v1 endpoints
 - remove /v1/users and /v1/sessions handlers
 - migrate fixture suite to /v2 equivalents
 
-BREAKING CHANGE: clients pinned to /v1 must upgrade to /v2 before this release. See docs/migration-v2.md.
-Generated-by: Claude Opus 4.7 <noreply@anthropic.com>
-```
-
-**4) Docs-only, trivial AI involvement**
-
-```
-docs: clarify token-refresh semantics in README
-
-- note that refresh tokens rotate on every use
-- add a sequence diagram for the silent-renewal flow
-
-Commit-generated-by: Claude Haiku 4.5 <noreply@anthropic.com>
+BREAKING CHANGE: clients pinned to /v1 must upgrade to /v2 before this release.
+Generated-by: Claude Opus 5 <noreply@anthropic.com>
 ```
