@@ -32,7 +32,7 @@ If the user hasn't told you which type of project this is, **ask** before genera
 For deep guidance on each section — what to include, what to leave out, common mistakes — read `references/sections.md`. The summary below is enough to draft from when the user has given clear input.
 
 1. **Title and Introduction** — Project name as `# H1`. One- or two-sentence pitch. Optional: logo, screenshot, demo link, and a *small* set of badges (see "Badges" below — never a long list).
-2. **Table of Contents** — Linked anchors to each section. Skip for very short READMEs (under \~5 sections).
+2. **Table of Contents** — Linked anchors to each section. Skip for very short READMEs (under ~5 sections).
 3. **About** — What the project is, what problem it solves, who it's for. High-level only. No implementation details.
 4. **Features** — Major capabilities. Either a feature/description table or a subheading per feature with more detail. Stay at the *what*, not the *how*.
 5. **Tech Stack** — Languages, frameworks, runtimes, key libraries, infra, third-party services. A simple bulleted list or a categorized table both work.
@@ -69,7 +69,7 @@ The flow depends on what the user has given you.
 
 ### If the user wants an audit only (no rewrite)
 
-Score the README against the 15 sections. For each section: present (✓), partial (\~), or missing (✗). For partial/missing, suggest one concrete improvement. Don't generate replacement content unless asked.
+Score the README against the 15 sections. For each section: present (✓), partial (~), or missing (✗). For partial/missing, suggest one concrete improvement. Don't generate replacement content unless asked.
 
 ## Mermaid diagrams
 
@@ -95,7 +95,7 @@ Badges are **load-bearing signals**, not decoration. Every badge must earn its r
 ### Hard rules
 
 - **Default to zero.** Add badges only when there's a concrete reason. License is the only one that's almost always worth it on a public repo.
-- **Cap at \~3, soft-cap at 5.** If you find yourself reaching for a 6th badge, you're decorating.
+- **Cap at ~3, soft-cap at 5.** If you find yourself reaching for a 6th badge, you're decorating.
 - **Never use a badge to restate the Tech Stack section.** "Built with React" / "Uses TypeScript" / "Powered by Postgres" tell the reader something they'll learn in the next paragraph. The Tech Stack table does this better.
 - **Verify before adding.** A badge is a claim. If you can't verify the claim from repo state, do not add it.
 - **Render horizontally.** Put all badges on a single line separated by spaces — never one per line. Markdown line breaks force vertical stacking, which looks like a checklist instead of a header. Use newlines only when grouping makes sense (e.g., a row of "status" badges above a row of "package metadata" badges) — not as default formatting.
@@ -106,9 +106,9 @@ Some badges render a live count. Never add them unless the count is non-trivial 
 
 | Badge | Skip if… |
 | - | - |
-| Stars | repo has < \~50 stars (or you can't check) |
-| Forks | < \~10 forks |
-| Contributors | solo project, or < \~3 contributors |
+| Stars | repo has < ~50 stars (or you can't check) |
+| Forks | < ~10 forks |
+| Contributors | solo project, or < ~3 contributors |
 | Downloads / installs | unpublished package, or low/zero traffic |
 | Open issues / PRs | brand-new repo with no triage history |
 | Coverage % | no published coverage report URL |

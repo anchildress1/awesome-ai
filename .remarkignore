@@ -1,1 +1,13 @@
 .specstory/
+
+# Artifact files are model-facing (see AGENTS.md, "Audience: AI agents").
+# remark escapes `~`, `[`, `*`, and `_` for prose rendering, which a model
+# reads as literal backslashes and can echo back into its output.
+#
+# Leading slashes anchor these to the top level — unanchored, /skills/ would
+# also swallow docs/skills/, which is human-facing and must stay formatted.
+/skills/
+/instructions/
+/prompts/
+/agents/
+AGENTS.md

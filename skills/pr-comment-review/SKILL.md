@@ -71,8 +71,32 @@ configurations, so one explanation rarely covers both:
   Report a `0` as **"no prior comments in this repo"** — never as "not installed". A freshly
   installed app, or one enabled before its first eligible PR, returns exactly the same `0`, and
   calling that an installation problem sends the user to fix something that isn't broken.
-  Upgrade to "not installed" only with direct evidence: the app absent from
-  `gh api repos/{owner}/{repo}/installation` or from the repo's settings.
+
+  There is no user-token API that answers "is this app installed"
+  (`repos/{owner}/{repo}/installation` needs a GitHub App JWT and returns `401` to `gh auth`
+  credentials). A recent review on *any* PR here is the practical proof — a bot that answered
+  yesterday is installed today.
+
+  You can also check whether this bot was requested, but **filter by who was requested** — a bare
+  count of `review_requested` events counts requests aimed at humans and at the other bot:
+  ```bash
+  gh api --paginate repos/{owner}/{repo}/issues/{pr}/timeline \
+    --jq '[.[] | select(.event=="review_requested")
+           | .requested_reviewer.login // .requested_team.name] '
+  ```
+  Read the result carefully in both directions:
+
+  - **Requested and silent**, while it answered other PRs in minutes → installed and
+    not delivering. A bot-side failure, worth saying plainly.
+  - **Never requested** proves nothing on its own. Bots that review automatically never appear
+    here at all — Copilot shows up because a ruleset requests it, while Codex triggers on PR
+    open / ready-for-review / an `@codex review` comment and so leaves no request event.
+
+  Before declaring any automatic reviewer broken, **re-trigger it manually** and time the
+  response. Posting `@codex review` is the supported path, and a bot that answers a manual
+  trigger in minutes after missing the automatic one has a trigger problem, not an install
+  problem — a much more useful thing to tell the user. Send them to **Settings → GitHub Apps**
+  only when nothing else explains it.
 - **Other** — state the evidence. Never "reason unclear"; if inconclusive, say what you checked
   and what came back, so the user doesn't re-derive it.
 
@@ -83,7 +107,7 @@ pull_request_read(method="get_review_comments", owner, repo, pullNumber)
 ```
 
 Returns `review_threads[]`, each with `is_resolved` / `is_outdated` / `is_collapsed` and its
-comments — snake\_case in the payload, even though the tool description spells them camelCase.
+comments — snake_case in the payload, even though the tool description spells them camelCase.
 Page with `perPage` + `after` until `pageInfo.hasNextPage` is false; an unresolved thread on page
 two counts exactly as much as one on page one.
 
