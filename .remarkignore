@@ -1,7 +1,13 @@
 .specstory/
 
-# Skills are model-facing. remark escapes `~`, `[`, `*`, and `_` for prose
-# rendering, which is noise a model reads and can echo back into output.
-# Leading slash anchors this to the top-level dir — unanchored, it would also
-# swallow docs/skills/, which is human-facing and must stay formatted.
+# Artifact files are model-facing (see AGENTS.md, "Audience: AI agents").
+# remark escapes `~`, `[`, `*`, and `_` for prose rendering, which a model
+# reads as literal backslashes and can echo back into its output.
+#
+# Leading slashes anchor these to the top level — unanchored, /skills/ would
+# also swallow docs/skills/, which is human-facing and must stay formatted.
 /skills/
+/instructions/
+/prompts/
+/agents/
+AGENTS.md

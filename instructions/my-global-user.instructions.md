@@ -208,7 +208,7 @@ Apply these rules only in repositories that contain Java or JVM-based builds:
 Apply these rules when working with any GHA workflow file:
 
 - Prefer permissions at a job level over file level permissions
-- Use the default GITHUB\_TOKEN unless a PAT is explicitly requested by the user
+- Use the default GITHUB_TOKEN unless a PAT is explicitly requested by the user
 - Never output raw secrets to a log of any kind. Use `::add-mask::VALUE` when logging any sensitive info.
 - Prefer to pass secrets via `secrets` or `env` whenever possible
 - Every job should define a timeout

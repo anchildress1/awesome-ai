@@ -71,8 +71,17 @@ configurations, so one explanation rarely covers both:
   Report a `0` as **"no prior comments in this repo"** — never as "not installed". A freshly
   installed app, or one enabled before its first eligible PR, returns exactly the same `0`, and
   calling that an installation problem sends the user to fix something that isn't broken.
-  Upgrade to "not installed" only with direct evidence: the app absent from
-  `gh api repos/{owner}/{repo}/installation` or from the repo's settings.
+
+  There is no user-token API that answers "is this app installed"
+  (`repos/{owner}/{repo}/installation` needs a GitHub App JWT and returns `401` to `gh auth`
+  credentials). What you *can* check: whether the bot was requested on this PR at all.
+  ```bash
+  gh api --paginate repos/{owner}/{repo}/issues/{pr}/timeline \
+    --jq '[.[] | select(.event=="review_requested")] | length'
+  ```
+  Requested but silent, while it answered other PRs in minutes, means installed-and-not-delivering
+  — a bot-side failure, not a setup problem, and worth saying plainly. Send the user to
+  **Settings → GitHub Apps** only when nothing else explains it.
 - **Other** — state the evidence. Never "reason unclear"; if inconclusive, say what you checked
   and what came back, so the user doesn't re-derive it.
 
