@@ -74,14 +74,29 @@ configurations, so one explanation rarely covers both:
 
   There is no user-token API that answers "is this app installed"
   (`repos/{owner}/{repo}/installation` needs a GitHub App JWT and returns `401` to `gh auth`
-  credentials). What you *can* check: whether the bot was requested on this PR at all.
+  credentials). A recent review on *any* PR here is the practical proof — a bot that answered
+  yesterday is installed today.
+
+  You can also check whether this bot was requested, but **filter by who was requested** — a bare
+  count of `review_requested` events counts requests aimed at humans and at the other bot:
   ```bash
   gh api --paginate repos/{owner}/{repo}/issues/{pr}/timeline \
-    --jq '[.[] | select(.event=="review_requested")] | length'
+    --jq '[.[] | select(.event=="review_requested")
+           | .requested_reviewer.login // .requested_team.name] '
   ```
-  Requested but silent, while it answered other PRs in minutes, means installed-and-not-delivering
-  — a bot-side failure, not a setup problem, and worth saying plainly. Send the user to
-  **Settings → GitHub Apps** only when nothing else explains it.
+  Read the result carefully in both directions:
+
+  - **Requested and silent**, while it answered other PRs in minutes → installed and
+    not delivering. A bot-side failure, worth saying plainly.
+  - **Never requested** proves nothing on its own. Bots that review automatically never appear
+    here at all — Copilot shows up because a ruleset requests it, while Codex triggers on PR
+    open / ready-for-review / an `@codex review` comment and so leaves no request event.
+
+  Before declaring any automatic reviewer broken, **re-trigger it manually** and time the
+  response. Posting `@codex review` is the supported path, and a bot that answers a manual
+  trigger in minutes after missing the automatic one has a trigger problem, not an install
+  problem — a much more useful thing to tell the user. Send them to **Settings → GitHub Apps**
+  only when nothing else explains it.
 - **Other** — state the evidence. Never "reason unclear"; if inconclusive, say what you checked
   and what came back, so the user doesn't re-derive it.
 
