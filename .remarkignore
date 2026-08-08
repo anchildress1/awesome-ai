@@ -1,5 +1,7 @@
 .specstory/
 
-# Skills are model-facing. remark escapes `~` and `[` for prose rendering,
-# which is noise a model reads and can echo back into output.
-skills/
+# Skills are model-facing. remark escapes `~`, `[`, `*`, and `_` for prose
+# rendering, which is noise a model reads and can echo back into output.
+# Leading slash anchors this to the top-level dir — unanchored, it would also
+# swallow docs/skills/, which is human-facing and must stay formatted.
+/skills/
