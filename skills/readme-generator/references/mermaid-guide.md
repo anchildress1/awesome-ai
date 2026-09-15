@@ -1,56 +1,47 @@
-# Mermaid diagram type selection guide
+## Diagram type
 
-Use this guide to pick the right Mermaid diagram type for the Architecture section (and anywhere else you reach for a diagram in the README).
-
-## Decision rules
-
-Ask: **what is the diagram trying to show?**
-
-| You want to show… | Use |
+| Showing | Use |
 | - | - |
 | Components and how data/requests flow between them | `flowchart` |
-| The sequence of messages between actors over time | `sequenceDiagram` |
-| The lifecycle of a single entity (states + transitions) | `stateDiagram-v2` |
-| The data model / database schema | `erDiagram` |
-| A pipeline (CI/CD, build, ETL) with linear-ish stages | `flowchart TB` |
-| Class hierarchies in an OO codebase | `classDiagram` |
+| Messages between actors over time | `sequenceDiagram` |
+| One entity's lifecycle (states + transitions) | `stateDiagram-v2` |
+| Data model / schema | `erDiagram` |
+| Pipeline (CI/CD, build, ETL) | `flowchart TB` |
+| OO class hierarchy | `classDiagram` |
 | User journey through a product | `journey` |
-| Project plan / Gantt chart | `gantt` |
-| Pie chart of categorical breakdown | `pie` |
+| Project plan | `gantt` |
+| Categorical breakdown | `pie` |
 
-## Default for "Architecture"
+Architecture default: `flowchart LR` for service-shaped projects (web app, API + workers +
+DB, microservices). `flowchart TB` when progression is the point.
 
-For most service-shaped projects (web app, API + workers + DB, microservices), default to **`flowchart LR`** (left-to-right). This gives you the typical "request enters from the left, traverses the system, hits the database on the right" reading order that matches how people mentally model HTTP traffic.
+## Shapes
 
-For pipelines, builds, or anything where progress is the point, use **`flowchart TB`** (top-to-bottom).
+Shape encodes component type, never decoration.
 
-## Shapes by component type
-
-Pick shapes that match what each component *is*, not just to add visual variety.
-
-| Shape syntax | Use for |
+| Syntax | Component |
 | - | - |
-| `[Service Name]` | Services, applications, generic boxes |
-| `([User])` | External actors, users, clients |
-| `[(Database)]` | Databases, persistent stores |
-| `[[Queue]]` | Queues, message buses, subroutines |
-| `>Note]` | Annotations, side comments |
-| `{Decision?}` | Branching logic in pipelines |
+| `[Service Name]` | Service, application, generic box |
+| `([User])` | External actor, user, client |
+| `[(Database)]` | Database, persistent store |
+| `[[Queue]]` | Queue, message bus, subroutine |
+| `>Note]` | Annotation |
+| `{Decision?}` | Branch in a pipeline |
 
-## Arrow styles
+## Arrows
 
-| Syntax | Means |
+| Syntax | Meaning |
 | - | - |
 | `-->` | Synchronous call / hard dependency |
-| `-.->` | Async, optional, or fallback path |
-| `==>` | Emphasized / primary path |
+| `-.->` | Async, optional, or fallback |
+| `==>` | Primary / emphasized path |
 | `--x` | Failure or terminating path |
 
-Use the visual difference deliberately — e.g., the happy path in solid lines, the async/event-driven side paths in dotted.
+Happy path solid; async and failure paths dotted.
 
-## Subgraphs (grouping)
+## Subgraphs
 
-Use `subgraph` to group components by bounded context, deployment unit, or trust boundary. Don't overdo it; one to three subgraphs in a single diagram is plenty.
+Group by bounded context, deployment unit, or trust boundary. One to three per diagram.
 
 ```mermaid
 flowchart LR
@@ -73,34 +64,26 @@ flowchart LR
     API --> Cache
 ```
 
-## When *not* to use Mermaid
+## Limits
 
-Mermaid is the default but not the only option. Reach for something else when:
+- Readable on a phone. Sprawling → split into multiple diagrams.
+- System too complex for any single diagram → split, or recommend Structurizr / C4 or
+  Excalidraw exports.
 
-- **The system is too complex for any single diagram.** Split into multiple smaller diagrams or use a dedicated architecture-as-code tool (Structurizr / C4, Excalidraw exports). A 60-node Mermaid graph is unreadable.
-- **The visual fidelity matters.** For published architecture posts, hand-drawn or designer-tooled diagrams may be worth the extra effort. A README typically isn't that.
-- **The render target doesn't support Mermaid.** npm registry, PyPI, and some older Markdown viewers don't render Mermaid. Solution: keep the Mermaid source in the README, render it once to SVG, and check the SVG into the repo as a fallback.
+## Render targets
 
-## Render target compatibility
+| Renders Mermaid | Does not |
+| - | - |
+| GitHub · GitLab · Bitbucket Cloud · Gitea / Forgejo · VS Code preview · Docusaurus, MkDocs, Hugo (with plugin) | npm package page · PyPI package page · Confluence without a plugin |
 
-Confirmed Mermaid-native rendering:
+Target doesn't render → keep the Mermaid source, and tell the user to render it once to
+SVG and commit the SVG as a fallback.
 
-- GitHub (since 2022)
-- GitLab
-- Bitbucket Cloud
-- Gitea / Forgejo
-- Most static site generators with a Mermaid plugin (Docusaurus, MkDocs, Hugo)
-- VS Code Markdown preview
+## Troubleshooting
 
-Does **not** render Mermaid:
-
-- npm package page
-- PyPI package page
-- Some corporate wiki tools (Confluence native — needs a plugin)
-
-## Quick troubleshooting
-
-- **Diagram appears as a literal code block on GitHub** — make sure the fence is exactly ` ```mermaid ` with no extra characters, and that it's a `.md` file (not `.txt`).
-- **Mermaid syntax error** — paste the diagram into [mermaid.live](https://mermaid.live) to get a clearer error message than GitHub gives.
-- **Long node labels overflow** — use `<br/>` to wrap manually inside a label, or shorten the label and put the full description in the prose below.
-- **Arrows crossing each other** — try changing direction (`LR` ↔ `TB`), or split into two diagrams.
+| Symptom | Fix |
+| - | - |
+| Shows as a literal code block on GitHub | Fence must be exactly ` ```mermaid `; file must be `.md` |
+| Syntax error | Validate the diagram with a Mermaid validator tool, or <https://mermaid.live> |
+| Label overflow | `<br/>` inside the label, or shorten and move detail to the prose |
+| Crossing arrows | Flip direction (`LR` ↔ `TB`) or split the diagram |

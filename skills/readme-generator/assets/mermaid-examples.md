@@ -1,7 +1,3 @@
-# Mermaid examples for README diagrams
-
-Pick the diagram type that matches what you're trying to communicate. The patterns below are starting points — adapt names, arrows, and styling to the project.
-
 ## 1. Web app architecture (flowchart)
 
 Use when showing how a typical web/service architecture fits together.
@@ -170,11 +166,3 @@ flowchart TB
     Approve -->|approved| Prod[Deploy to production]
     Approve -->|rejected| Rollback[Stop]
 ```
-
-## Styling tips
-
-- Keep the diagram **small enough to read on a phone** — if it sprawls, split it into two diagrams.
-- Use `[(Database shape)]` for data stores, `([Round shape])` for actors/users, `[[Subroutine shape]]` for queues/buses, plain `[Rectangle]` for services.
-- Prefer `LR` (left-to-right) for request flows, `TB` (top-to-bottom) for pipelines and hierarchies.
-- Don't show every component. The diagram should highlight the parts a reader needs to understand the system; details belong in deeper docs.
-- If one path is the "happy path," draw it with solid arrows and put failure / async paths in dotted (`-.->`).
