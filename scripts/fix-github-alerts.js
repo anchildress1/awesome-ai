@@ -4,7 +4,7 @@
  * Post-processor to fix escaped GitHub alerts after remark formatting
  *
  * Usage: Run this after remark to fix escaped GitHub alert syntax
- * npm run format && node scripts/fix-github-alerts.js
+ * node scripts/fix-github-alerts.js [file ...]   (no args: every non-gitignored .md file)
  */
 
 import fs from 'node:fs';
@@ -35,8 +35,9 @@ async function processFiles() {
     // Always ignore these directories
     ig.add(['.git/**', 'node_modules/**']);
 
-    // Find all markdown files recursively
-    const files = await glob('**/*.md', {
+    // Explicit paths (e.g. staged files from the pre-commit hook) limit the run to those files
+    const args = process.argv.slice(2);
+    const files = args.length > 0 ? args : await glob('**/*.md', {
       cwd: process.cwd(),
       dot: true,  // Include files and directories that start with a dot
       nodir: true // Only return files, not directories
