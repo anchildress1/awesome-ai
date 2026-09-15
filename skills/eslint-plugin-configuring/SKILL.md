@@ -1,238 +1,116 @@
 ---
 status: draft
-name: eslint-plugin-configs
+name: eslint-plugin-configuring
 description: Generate or update an ESLint plugin that exports rule configs compatible with ESLint v8 (eslintrc) and ESLint v9 (flat config).
 ---
 
-## Role
+> **Stale target.** Rules below cover ESLint **v8 and v9**. v9 reached end-of-life
+> 2026-08-06; **v10** has been current since February 2026 and dropped Node < 20.19.
+> Confirm the consumer's ESLint major and check
+> <https://eslint.org/docs/latest/extend/plugins> for v10 plugin-shape changes before
+> applying anything. Never assume the v9 shapes still hold.
 
-You are the agent responsible for creating or modifying an **ESLint plugin package** that exports:
+Scope: author or modify an ESLint **plugin package** exporting `rules`, `configs`
+(flat and/or legacy), optional `processors`, and `meta` (`name`, `version`, `namespace`).
+Deliverable is plugin source **plus** working consumer examples.
 
-- `rules`
-- `configs` (flat and/or legacy)
-- optional `processors`
-- recommended `meta` (`name`, `version`, `namespace`)
+| File | Use for |
+| - | - |
+| `reference/eslint-plugin-configs.md` | Plugin skeleton and config-assignment code |
+| `examples/consumers.md` | Flat and legacy consumer configs for each naming strategy |
 
-Your output is plugin source code plus correct consumer usage examples.
+## Version semantics — state these correctly or not at all
 
-This Skill targets **ESLint v8.x and v9.x** behavior explicitly.
+| Version | Default | Other mode |
+| - | - | - |
+| v9 | Flat config | `.eslintrc*` deprecated; applies only with `ESLINT_USE_FLAT_CONFIG=false` |
+| v8 | `.eslintrc*` | Flat opt-in via `eslint.config.js` or `ESLINT_USE_FLAT_CONFIG=true` |
 
----
+## Hard constraints
 
-## Operating Assumptions
+- Never claim a plugin can force its own config to be used. It cannot.
+- Never invent config-resolution behavior that isn't documented.
+- Never mix flat and legacy shapes: no flat object exported as legacy, no legacy config
+  exported as an array.
+- Never emit colliding or ambiguous config names.
+- Never silently rename or remove a published config key — breaking for every consumer.
 
-### ESLint Version Semantics
+## Inputs (assume derivable)
 
-- **ESLint v9**
-  - Flat config is the default.
-  - `.eslintrc*` is deprecated.
-  - Legacy configs only apply if `ESLINT_USE_FLAT_CONFIG=false`.
+`PACKAGE_NAME` · `NAMESPACE` (rule/config prefix) · `RULES` (`ruleId → implementation`) ·
+desired config set (`recommended`, `strict`, …).
 
-- **ESLint v8**
-  - `.eslintrc*` is the common default.
-  - Flat config is opt-in via `eslint.config.js` or `ESLINT_USE_FLAT_CONFIG=true`.
+## Plugin shape
 
-You must not misstate these behaviors.
+Single object, ESM default export:
 
----
-
-## Non-Goals (Hard Constraints)
-
-- Do not claim the plugin can force configuration usage.
-- Do not invent undocumented config resolution logic.
-- Do not mix flat and legacy config shapes.
-- Do not introduce ambiguous or colliding config names.
-
----
-
-## Required Inputs (Implicit)
-
-Assume the following exist or are derivable:
-
-- `PACKAGE_NAME` (npm package name)
-- `NAMESPACE` (rule/config prefix)
-- `RULES` (map of `ruleId -> rule implementation`)
-- Optional desired config set (e.g. `recommended`, `strict`)
-
----
-
-## Mandatory Plugin Shape
-
-The plugin **must** export a single object with:
-
-- `meta`
-  - `name`
-  - `version`
-  - `namespace`
+- `meta` — `name`, `version`, `namespace`
 - `rules`
 - `configs`
-- optional `processors`
+- `processors` (optional)
 
-Preferred export is **ESM default export**.
+`meta.namespace` is the canonical prefix for rules, configs, and registration. Rule IDs
+inside the plugin never contain `/`. Every rule reference in a config is
+`"<namespace>/<ruleId>"`.
 
----
+## Naming strategy — pick one, apply throughout
 
-## Meta Rules
+| Strategy | When | Keys |
+| - | - | - |
+| **A** (default) | New plugin, or you own the public API | Flat `flat/<configName>` · Legacy `legacy-<configName>` |
+| **B** | Legacy `<configName>` already published | Keep `<configName>` exactly; add `flat/<configName>` |
 
-- `meta.namespace` is the canonical prefix for:
-  - rules
-  - configs
-  - plugin registration
-- All rule references must use `"<namespace>/<ruleId>"`.
-- Namespace consistency is mandatory across all outputs.
+## Config requirements
 
----
+**Flat (v9 primary)** — array of config objects · plugin registered in object form
+`plugins: { [namespace]: plugin }` · namespaced rule keys · `languageOptions` optional.
+`configs["flat/recommended"] → Array<FlatConfigObject>`
 
-## Config Export Strategies
+**Legacy (v8)** — plain eslintrc object · `plugins: ["<namespace>"]` · namespaced rule
+keys · `globals`/`parserOptions` optional.
+`configs["legacy-recommended"] → EslintrcObject`
 
-Choose **exactly one** strategy and apply it consistently.
+## Self-reference
 
-### Strategy A — New Plugin (Recommended)
+A config that references the plugin object must not read `plugin` before it exists:
 
-Use explicit separation:
+1. Create `plugin` with `configs` empty.
+2. Assign configs afterward (`Object.assign`).
 
-- Flat configs: `flat/<configName>`
-- Legacy configs: `legacy-<configName>`
+## Consumer mapping
 
-This avoids collisions and makes intent unambiguous.
+The `flat/` prefix is an **export key, never a consumer string**.
 
-### Strategy B — Existing Plugin Compatibility
+| Export key | Consumer extends |
+| - | - |
+| `configs["flat/recommended"]` | `"namespace/recommended"` |
+| `configs["legacy-recommended"]` | `"namespace/legacy-recommended"` |
+| `configs["recommended"]` (Strategy B) | `"namespace/recommended"` |
 
-If a legacy config already exists as `<configName>` and cannot be renamed:
+## Required output
 
-- Preserve legacy key: `<configName>`
-- Add flat variant: `flat/<configName>`
+Unless the user excludes them, emit both, matching the chosen naming strategy exactly:
 
-Never remove or silently rename an existing legacy config.
+1. **Flat** — `eslint.config.js`, using `defineConfig`, registering the plugin, using
+   `extends`.
+2. **Legacy** — `.eslintrc` (JSON/YAML/JS), using `plugins` + `extends`.
 
----
+Plus plugin source or diffs, and the validation result below.
 
-## Flat Config Requirements (ESLint v9 Primary)
+## Migration
 
-Flat configs must:
+- Legacy only, dual support wanted → add `flat/<name>`
+- Flat only, v8 support wanted → add `legacy-<name>`
+- `meta.namespace` missing → add it and realign every rule prefix
+- Consumer examples disagree with config keys → regenerate the examples, not the keys
 
-- Be arrays of config objects (preferred).
-- Register the plugin using object form:
-  - `plugins: { [namespace]: plugin }`
-- Enable rules using namespaced keys.
-- Optionally define `languageOptions`.
+## Validation gate
 
-Example shape (conceptual):
+All must hold before reporting done:
 
-- `configs["flat/recommended"] -> Array<FlatConfigObject>`
-
----
-
-## Legacy Config Requirements (ESLint v8 Compatibility)
-
-Legacy configs must:
-
-- Be plain eslintrc-shaped objects.
-- Register plugin using:
-  - `plugins: ["<namespace>"]`
-- Enable rules using namespaced keys.
-- Optionally include `globals`, `parserOptions`, etc.
-
-Example shape (conceptual):
-
-- `configs["legacy-recommended"] -> EslintrcObject`
-
----
-
-## Self-Reference Rule (Critical)
-
-If configs need to reference the plugin object itself:
-
-1. Instantiate `plugin` with empty `configs`.
-2. Assign configs **after** plugin creation (e.g. via `Object.assign`).
-
-Never reference `plugin` before it exists.
-
----
-
-## Consumer Mapping Rules
-
-### Flat Config Consumers
-
-If the plugin exports:
-
-- `configs["flat/recommended"]`
-
-Then consumers extend:
-
-- `"namespace/recommended"`
-
-The `flat/` prefix is **not** used by consumers.
-
-### Legacy Consumers
-
-If the plugin exports:
-
-- `configs["legacy-recommended"]`
-
-Then consumers extend:
-
-- `"namespace/legacy-recommended"`
-
-If preserving an existing legacy name:
-
-- `configs["recommended"]` → `"namespace/recommended"`
-
----
-
-## Required Consumer Examples
-
-Unless explicitly excluded, you must output:
-
-1. **Flat config example**
-   - `eslint.config.js`
-   - Uses `defineConfig`
-   - Registers plugin
-   - Uses `extends`
-
-2. **Legacy config example**
-   - `.eslintrc` (JSON/YAML/JS)
-   - Uses `plugins` + `extends`
-
-Examples must match the chosen naming strategy exactly.
-
----
-
-## Repair / Migration Rules
-
-When updating existing plugins:
-
-- Legacy only → add `flat/<name>` if dual support is required.
-- Flat only → add `legacy-<name>` if v8 support is required.
-- Missing `meta.namespace` → add it and realign all rule prefixes.
-- Incorrect consumer examples → regenerate to match config keys.
-
-Never silently change public config names.
-
----
-
-## Validation Checklist (Fail Fast)
-
-Confirm all of the following:
-
-- `plugin.meta.namespace` exists and matches all rule prefixes.
-- Flat configs:
-  - arrays (preferred)
-  - register plugin via object form
-- Legacy configs:
-  - eslintrc object shape
-  - plugin registered via array
-- No config key collisions.
-- ESLint v8 vs v9 behavior is stated correctly.
-- No claim that the plugin forces config usage.
-
----
-
-## Output Expectations
-
-When executing this Skill, output:
-
-- Plugin source code (or diffs).
-- Flat consumer example.
-- Legacy consumer example.
-- Brief validation confirmation.
+- `meta.name`, `meta.version`, `meta.namespace` present; namespace matches every rule prefix
+- Flat configs are arrays and register via object form
+- Legacy configs are eslintrc-shaped and register via array form
+- One naming strategy applied throughout; no config key collisions
+- Version behavior stated correctly per the table above
+- No claim that the plugin forces config usage
