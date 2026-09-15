@@ -16,7 +16,7 @@ Deliverable is plugin source **plus** working consumer examples.
 
 | File | Use for |
 | - | - |
-| `reference/eslint-plugin-configs.md` | Plugin skeleton and config-assignment code |
+| `references/eslint-plugin-configs.md` | Plugin skeleton and config-assignment code |
 | `examples/consumers.md` | Flat and legacy consumer configs for each naming strategy |
 
 ## Version semantics — state these correctly or not at all
