@@ -37,7 +37,7 @@ Shape encodes component type, never decoration.
 | `==>` | Primary / emphasized path |
 | `--x` | Failure or terminating path |
 
-Happy path solid; async and failure paths dotted.
+Happy path solid; async/optional/fallback paths dotted; failure paths use `--x`.
 
 ## Subgraphs
 
