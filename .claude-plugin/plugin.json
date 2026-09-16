@@ -1,0 +1,16 @@
+{
+  "name": "awesome-ai",
+  "displayName": "Ashley's Awesome AI",
+  "description": "Skills for commit messages, PR review triage, changelogs, READMEs, tests, and ESLint plugin config.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Ashley Childress",
+    "url": "https://github.com/anchildress1"
+  },
+  "homepage": "https://github.com/anchildress1/awesome-ai#readme",
+  "repository": "https://github.com/anchildress1/awesome-ai",
+  "license": "MIT",
+  "category": "development",
+  "keywords": ["skills", "commit-messages", "code-review", "documentation", "testing"],
+  "skills": "./skills"
+}

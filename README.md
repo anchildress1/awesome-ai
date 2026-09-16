@@ -9,15 +9,24 @@
 > ⭐️ If one of these guys helped you, leave a star!
 > If it failed spectacularly, tell me. Either way, I’ll learn something — and so will the bot.
 
-> [!NOTE]
-> So my original idea of making all this directly accessible through a Copilot Extension hit a wall — a few walls, actually.
-> GitHub recently announced the **sunset of that functionality** in favor of **MCP**.
->
-> The [github/awesome-copilot](https://github.com/github/awesome-copilot) repo already supports MCP (plus installs into VS Code and Visual Studio), so I’ve started moving some of the more stable pieces there.
->
-> This repo will still get the newest experiments first, but the “official” ones will live upstream.
->
-> Got questions or ideas? Feel free to reach out — socials are on my profile. 🦄
+## Install the Skills 📦
+
+This repo is a Claude Code plugin marketplace, so the skills install directly:
+
+```bash
+/plugin marketplace add anchildress1/awesome-ai
+/plugin install awesome-ai@anchildress1
+```
+
+Then use the installed skill names — `test-writer`, `readme-generator`, and so on.
+Run `/plugin marketplace update anchildress1` to pull in new ones.
+
+The instructions, prompts, and agents below are GitHub Copilot artifacts. Copy them into your
+own repo the usual way; the plugin ships skills only. A few of the steadier pieces also live
+upstream in [github/awesome-copilot](https://github.com/github/awesome-copilot) — this repo
+gets the newest experiments first.
+
+Questions or ideas? Socials are on my profile. 🦄
 
 ---
 
@@ -116,7 +125,7 @@ Custom AI "personalities with a purpose" for Copilot Chat and MCP. They’re all
 
 ## Skills 🧰
 
-Skills are small, reusable playbooks you can hand to an agent when you want consistent output without re-explaining your rules every time.
+Skills are small, reusable playbooks you can hand to an agent when you want consistent output without re-explaining your rules every time. These ship in the plugin — see [Install the Skills](#install-the-skills-) above.
 
 | Name | Status | Purpose | Notes |
 | - | :-: | - | - |

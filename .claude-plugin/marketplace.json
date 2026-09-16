@@ -1,0 +1,15 @@
+{
+  "$schema": "https://code.claude.com/schemas/marketplace.json",
+  "name": "anchildress1",
+  "description": "Ashley Childress's AI skills, agents, prompts, and instructions.",
+  "owner": {
+    "name": "Ashley Childress",
+    "url": "https://github.com/anchildress1"
+  },
+  "plugins": [
+    {
+      "name": "awesome-ai",
+      "source": "./"
+    }
+  ]
+}

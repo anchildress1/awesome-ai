@@ -44,6 +44,6 @@ Emojis in Markdown headers MUST appear after the header text, never before. Reas
 
 ## Toolchain
 
-- **remark**: Markdown linting and formatting — `npm run check` / `npm run format`
+- **remark**: Markdown linting and formatting — `npm run lint` / `npm run format`
 - **commitlint**: Conventional Commits enforcement via custom plugin
 - **lefthook**: Runs remark and commitlint as pre-commit and commit-msg hooks
