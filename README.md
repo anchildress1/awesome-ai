@@ -18,7 +18,7 @@ This repo is a Claude Code plugin marketplace, so the skills install directly:
 /plugin install awesome-ai@anchildress1
 ```
 
-Then call one by name — `/awesome-ai:test-writer`, `/awesome-ai:readme-generator`, and so on.
+Then use the installed skill names — `test-writer`, `readme-generator`, and so on.
 Run `/plugin marketplace update anchildress1` to pull in new ones.
 
 The instructions, prompts, and agents below are GitHub Copilot artifacts. Copy them into your

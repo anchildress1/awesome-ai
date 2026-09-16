@@ -34,9 +34,10 @@ Install it from a clone to test changes before pushing:
 /plugin install awesome-ai@anchildress1
 ```
 
-Adding a skill needs no manifest edit — `skills/` is scanned, so a new
-`skills/<name>/SKILL.md` ships on the next `/plugin marketplace update anchildress1`.
-Bump `version` in `plugin.json` when you want existing installs to pick the change up.
+Adding a skill needs no manifest edit — `skills/` is scanned automatically.
+To ship one to existing installs, add `skills/<name>/SKILL.md`, bump `version` in
+`plugin.json`, then run `/plugin marketplace update anchildress1`. Without the
+version bump, existing installs have nothing new to fetch.
 
 Every skill directory must contain a `SKILL.md` whose frontmatter `name` equals the
 directory name, or the skill loads under a name nothing references.
