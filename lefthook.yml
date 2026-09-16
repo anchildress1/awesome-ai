@@ -2,12 +2,11 @@ pre-commit:
   parallel: true
   commands:
     format:
-      run: |
-        STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
-        if [ -n "$STAGED_FILES" ]; then
-          echo "$STAGED_FILES" | xargs -r npm run format
-          echo "$STAGED_FILES" | xargs -r git add
-        fi
+      glob: "*.md"
+      # --silently-ignore: staged artifact files are in .remarkignore, and naming an
+      # ignored file explicitly is otherwise a hard error.
+      run: npx remark {staged_files} -o -q --silently-ignore && node scripts/fix-github-alerts.js {staged_files}
+      stage_fixed: true
 
 commit-msg:
   parallel: true

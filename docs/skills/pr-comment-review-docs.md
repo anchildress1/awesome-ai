@@ -114,7 +114,7 @@ gh api -X GET search/issues \
 > [!IMPORTANT]
 > A `0` means **no prior comments**, not "not installed." A freshly installed app returns the same
 > `0` until its first eligible PR — this repo returned `0` for Codex right up until Codex reviewed
-> [#20](https://github.com/anchildress1/awesome-github-copilot/pull/20). To check installation for
+> [#20](https://github.com/anchildress1/awesome-ai/pull/20). To check installation for
 > real, use `gh api repos/{owner}/{repo}/installation` or the repo's settings.
 
 ---

@@ -16,10 +16,7 @@ disable-model-invocation: false
 user-invocable: true
 ---
 
-Remediation workflow for an existing PR. Bot threads rot: unresolved thread, PR merges, the
-"minor" finding was the real one. Every step below exists to close that gap.
-
-GitHub MCP tools are preferred when loaded
+Prefer GitHub MCP tools when loaded
 (`ToolSearch("select:mcp__plugin_github_github__pull_request_read")`); `gh api` equivalents are
 given inline.
 
@@ -150,9 +147,6 @@ Fix via `update_pull_request` / `gh pr edit`. Metadata correction — GitHub's e
 trail, so no comment needed.
 
 ## 5. Self-review — once per PR, not per invocation
-
-Only fixing what bots flagged outsources your judgment. But most invocations are a status check
-or a follow-up on new comments, not the first pass.
 
 Check for the marker `<!-- pr-comment-review:self-reviewed -->` in the PR's comments/reviews
 first. Present → skip to §6 and say so ("self-review already done in <link>; say 'redo the
