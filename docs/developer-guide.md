@@ -15,7 +15,7 @@ npm install
 ```bash
 npm run format      # Format markdown + fix GitHub alerts
 npm run lint        # Lint markdown files
-npm run commitlint  # Validate the commit message (used by the commit-msg hook)
+npm run commitlint -- .git/COMMIT_EDITMSG  # Validate a saved commit message file
 ```
 
 ## Plugin Marketplace 🧰
@@ -48,6 +48,9 @@ Optional git hooks powered by **lefthook** (handy for pre-commit sanity checks):
 ```bash
 npx lefthook install
 ```
+
+The `commit-msg` hook runs `npx commitlint --edit {1} --strict`, so it checks the
+message file Git passes to the hook.
 
 ## Background Reading 📚
 
