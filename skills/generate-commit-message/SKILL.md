@@ -190,7 +190,7 @@ Generated-by: Claude Opus 5 <noreply@anthropic.com>
 ```
 
 ```
-feat(api)!: drop deprecated /v1 endpoints
+feat(PROJ-456)!: drop deprecated /v1 endpoints
 
 - remove /v1/users and /v1/sessions handlers
 - migrate fixture suite to /v2 equivalents

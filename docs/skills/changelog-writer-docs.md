@@ -1,4 +1,4 @@
-# Changelog Rewriter Skill 🧾
+# Changelog Writer Skill 🧾
 
 ![Status: Draft (pink badge)](https://img.shields.io/badge/status-draft-F72585.svg)
 

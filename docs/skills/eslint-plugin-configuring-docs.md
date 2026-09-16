@@ -8,6 +8,9 @@ Skill source: [`skills/eslint-plugin-configuring/SKILL.md`](../../skills/eslint-
 
 > 🦄 **Why this exists:** ESLint v8 and v9 handle configs differently—v9 prefers flat config, v8 prefers legacy eslintrc. Building a plugin that supports both is surprisingly easy to get wrong. This skill ensures your plugin exports the right shape, registers correctly, and gives consumers unambiguous examples that actually work. No guessing. No collision headaches. Just solid, versioned plugin architecture.
 
+> [!WARNING]
+> The skill predates ESLint v10. v9 reached end-of-life on 2026-08-06, and v10 has been current since February 2026. The skill tells the agent to check the v10 plugin docs before relying on its v9 shapes, but expect rough edges until it's updated.
+
 ---
 
 ## What It Does 🛠️
