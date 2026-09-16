@@ -18,6 +18,29 @@ npm run lint        # Lint markdown files
 npm run commitlint  # Validate the commit message (used by the commit-msg hook)
 ```
 
+## Plugin Marketplace 🧰
+
+This repo is a Claude Code plugin marketplace. Two manifests drive it:
+
+| File | Role |
+| - | - |
+| `.claude-plugin/marketplace.json` | Lists the marketplace and the plugins it offers |
+| `.claude-plugin/plugin.json` | Describes the `awesome-ai` plugin and points at `./skills` |
+
+Install it from a clone to test changes before pushing:
+
+```bash
+/plugin marketplace add ./path/to/awesome-ai
+/plugin install awesome-ai@anchildress1
+```
+
+Adding a skill needs no manifest edit — `skills/` is scanned, so a new
+`skills/<name>/SKILL.md` ships on the next `/plugin marketplace update anchildress1`.
+Bump `version` in `plugin.json` when you want existing installs to pick the change up.
+
+Every skill directory must contain a `SKILL.md` whose frontmatter `name` equals the
+directory name, or the skill loads under a name nothing references.
+
 ## Hooks 🪝
 
 Optional git hooks powered by **lefthook** (handy for pre-commit sanity checks):
