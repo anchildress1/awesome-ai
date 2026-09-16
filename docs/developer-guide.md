@@ -13,9 +13,9 @@ npm install
 ## Scripts 🧩
 
 ```bash
-npm run format  # Format markdown + fix GitHub alerts
-npm run lint    # Lint markdown files
-npm run check   # Run all checks at once
+npm run format      # Format markdown + fix GitHub alerts
+npm run lint        # Lint markdown files
+npm run commitlint  # Validate the commit message (used by the commit-msg hook)
 ```
 
 ## Hooks 🪝
