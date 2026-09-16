@@ -1,4 +1,4 @@
-# awesome-github-copilot — Agent Instructions
+# awesome-ai — Agent Instructions
 
 ## Repository purpose
 

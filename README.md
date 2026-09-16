@@ -1,6 +1,8 @@
-# awesome-github-copilot 🔭
+# Ashley's Awesome AI 🔭
 
-[![GitHub stars](https://img.shields.io/github/stars/anchildress1/awesome-github-copilot.svg?style=social\&label=Stars)](https://github.com/anchildress1/awesome-github-copilot/stargazers) [![wakatime](https://wakatime.com/badge/github/anchildress1/awesome-github-copilot.svg)](https://wakatime.com/badge/github/anchildress1/awesome-github-copilot) [![Open Issues](https://img.shields.io/github/issues/anchildress1/awesome-github-copilot.svg)](https://github.com/anchildress1/awesome-github-copilot/issues) [![Last commit](https://img.shields.io/github/last-commit/anchildress1/awesome-github-copilot.svg)](https://github.com/anchildress1/awesome-github-copilot/commits/main) [![Node](https://img.shields.io/badge/node-24.x-green.svg)](https://nodejs.org/) [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](./LICENSE)
+<p align="center"><img src="https://repository-images.githubusercontent.com/1021149201/657e99a0-e7fe-449e-a7ba-bfb461583dd9" alt="Social banner" /></p>
+
+[![GitHub stars](https://img.shields.io/github/stars/anchildress1/awesome-ai.svg?label=Stars)](https://github.com/anchildress1/awesome-ai/stargazers) [![wakatime](https://wakatime.com/badge/github/anchildress1/awesome-ai.svg)](https://wakatime.com/badge/github/anchildress1/awesome-ai) [![Open Issues](https://img.shields.io/github/issues/anchildress1/awesome-ai.svg)](https://github.com/anchildress1/awesome-ai/issues) [![Last commit](https://img.shields.io/github/last-commit/anchildress1/awesome-ai.svg)](https://github.com/anchildress1/awesome-ai/commits/main) [![Node](https://img.shields.io/badge/node-24.x-green.svg)](https://nodejs.org/) [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](./LICENSE)
 
 [![Made with GitHub Copilot](https://img.shields.io/badge/Made%20with-GitHub%20Copilot-6E40C9.svg)](https://github.com/features/copilot) [![Made with ChatGPT](https://img.shields.io/badge/Made%20with-ChatGPT-10A37F.svg)](https://chatgpt.com) [![Made with Claude](https://img.shields.io/badge/Made%20with-Claude-D97757.svg)](https://claude.com/claude-code)
 

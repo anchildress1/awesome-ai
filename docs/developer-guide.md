@@ -5,8 +5,8 @@ Quick setup for local hacking and validation before pushing anything upstream.
 ## Setup ⚙️
 
 ```bash
-git clone https://github.com/anchildress1/awesome-github-copilot.git
-cd awesome-github-copilot
+git clone https://github.com/anchildress1/awesome-ai.git
+cd awesome-ai
 npm install
 ```
 

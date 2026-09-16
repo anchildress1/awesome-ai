@@ -9,7 +9,7 @@ At the time this was generated, The Instructionalist was in its tweak stage — 
 ## Example Output
 
 ```markdown
-# GitHub Copilot Instructions for awesome-github-copilot
+# GitHub Copilot Instructions for awesome-ai
 
 ## Project Overview
 
