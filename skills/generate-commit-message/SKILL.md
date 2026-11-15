@@ -31,7 +31,7 @@ The only repo-mutating commands permitted are `git commit -S` and path-explicit 
 | `git add -A` / `.` / `-u` / globs | Sweeps unrelated edits into the commit |
 | `git push`, `rebase`, `reset`, `commit --amend` | History mutation isn't this skill's job |
 | `--no-verify`, `--no-gpg-sign` | Hooks and signing must run |
-| Edit source, docs, or config | No formatters, lint fixes, refactors, or test runs |
+| Edit source, docs, or config | No formatters, lint fixes, refactors, or test runs. Sole exception: the temporary revert-and-restore in [Splitting](#splitting-one-working-tree-into-atomic-commits), which must end byte-identical to the saved copy |
 | Commit on `main`/`master` | Unless the user directed it **this turn** |
 | Omit the AI-attribution trailer | A message without it is a failed message |
 
