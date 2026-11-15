@@ -22,7 +22,9 @@ edit, unasked.
 
 ## Triggers
 
-Declare explicit `pull_request` types. Bare `pull_request:` misses reopened PRs and fires on drafts.
+Declare explicit `pull_request` types. Bare `pull_request:` (implicit `opened`, `synchronize`,
+`reopened`) fires on drafts and never on `ready_for_review`, so a draft-skipped job never runs
+when the PR is marked ready.
 
 ```yaml
 on:
@@ -148,6 +150,7 @@ jobs:
         run: ./deploy.sh
 ```
 
+- Use the default `GITHUB_TOKEN`. A PAT or GitHub App token only when the user asks for one.
 - Never print a secret. Mask runtime-derived sensitive values: `echo "::add-mask::$TOKEN"`.
 - Never guard with `if: env.SECRET != ''`. Let the step fail; skipping hides a config error
   behind a green run.
