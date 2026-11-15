@@ -10,14 +10,6 @@ Originally crafted as a companion to [`The Logfather`](../../agents/logfather.ag
 
 ---
 
-## Designed for... 🤝
-
-- **The Logfather** agent — for automated agent-driven logging audits and fixes
-- **Manual use** — by developers who want to up their observability game
-- **Copilot agent tasks** — like logging linting, log upgrades, or secure log refactors
-
----
-
 ## What It Covers ✨
 
 - ✅ JSON-structured logging best practices

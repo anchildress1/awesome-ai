@@ -36,25 +36,12 @@ It’s not trying to be a novelist. It’s trying to be correct.
 
 ## How to use 🪄
 
-1. Open the prompt file: `prompts/generate-pr-documentation.prompt.md`.
-2. Run it using your Copilot prompt workflow / runner.
-3. Review the resulting doc edits (usually `README.md` and/or something under `docs/`).
+1. Open a PR first — the prompt reads the diff with `gh pr diff`.
+2. Open the prompt file: `prompts/generate-pr-documentation.prompt.md`.
+3. Run it using your Copilot prompt workflow / runner.
+4. Review the resulting doc edits (usually `README.md` and/or something under `docs/`).
 
 If you want to narrow scope, be explicit (e.g., “Only update docs related to `scripts/` changes”).
-
-> [!IMPORTANT]
-> **Current limitation:** this version assumes it can produce a meaningful **diff against `main`**.
-> If you’re not working from a branch that cleanly compares to `main`, it may miss context or produce “best guess” updates.
-> I’ll stop making it rely on `main` in a future iteration. (Yes, future me is thrilled.)
-
-## Output checklist 📦
-
-When it’s done, you should have:
-
-- updated Markdown docs that reflect the PR diff
-- no duplicated instructions across files
-- Mermaid diagrams that render on GitHub and include accessibility labels
-- no secrets or sensitive values written into documentation
 
 ---
 

@@ -88,7 +88,7 @@ Default for every diagram this skill produces. Why:
 - Plain text in version control — diff-able, reviewable in PRs
 - No external image hosting, no broken links if someone moves the assets folder
 
-Diagram-type selection (flowchart vs. sequence vs. C4 vs. ER) lives in `references/mermaid-guide.md`. Ready-to-adapt patterns are in `assets/mermaid-examples.md`. Default is `flowchart` for typical service architectures.
+Diagram-type selection (flowchart vs. sequence vs. state vs. ER) lives in `references/mermaid-guide.md`. Ready-to-adapt patterns are in `assets/mermaid-examples.md`. Default is `flowchart` for typical service architectures.
 
 If the rendering target doesn't support Mermaid (npm/PyPI registries are the main holdouts), the skill generates the Mermaid source and tells you to render it to SVG/PNG once and check the image in.
 
@@ -99,10 +99,10 @@ If the rendering target doesn't support Mermaid (npm/PyPI registries are the mai
 Badges are load-bearing signals, not decoration. Hard rules:
 
 - **Default to zero** — add only when there's a concrete reason; License is the only near-universal one
-- **Cap at \~3, soft-cap at 5** — six badges trains readers to skip them
+- **Cap at \~3, hard ceiling 5** — six badges trains readers to skip them
 - **Never restate the Tech Stack section** — "Built with React" belongs in the Tech Stack table, not the header
 - **Verify before adding** — a badge is a claim; unverifiable claims don't ship
-- **Render horizontally** — one line, space-separated; never one per line
+- **Render horizontally** — one line, space-separated; a second line only to group (status above package metadata)
 
 Live-count badges (stars, forks, downloads, coverage, issues) get skipped unless the number is non-embarrassing:
 
@@ -132,7 +132,6 @@ A "0 stars" badge actively hurts the project. A 404-ing CI badge is worse than n
 
 ## Practical Notes 🧰
 
-- Template lives at `assets/template.md` — all 15 sections pre-wired with Mermaid Architecture placeholder
+- Template lives at `assets/template.md` — all 15 sections pre-wired with a Mermaid Architecture placeholder
 - Sections separated by horizontal rules (`---`) for scannable rendered Markdown
-- User's specific phrasing is preserved over generic rewrites when improving an existing README
-- If asking for fresh content, the skill gathers from the repo before prompting the user
+- License isn't guessed — if you don't name one, it asks

@@ -1,6 +1,6 @@
 # Status Lifecycle & Badges 🌈
 
-Each mode, prompt, or instruction earns a status badge (find the badge legend right here—and at the top of each README):
+Each instruction, prompt, agent, and skill earns a status badge:
 
 | Status | Badge | Meaning |
 | - | - | - |
