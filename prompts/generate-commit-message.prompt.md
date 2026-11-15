@@ -10,14 +10,9 @@ tools: [
 ]
 ---
 
-## Goal
-
-Produce a conventional commit message from the highest-priority diff evidence and write it to `commit.tmp` exactly once per run.
-
-> [!NOTE]
-> This is the **draft-to-file** variant, for Copilot Chat and any flow where you want to read the message before committing. The [`generate-commit-message` skill](../skills/generate-commit-message/SKILL.md) is the **commit-directly** variant. Same rules, different endpoint — pick one per workflow rather than running both.
-
----
+Produce one Conventional Commit message from the highest-priority diff evidence and write it to
+`commit.tmp` exactly once per run. Never commit — the `generate-commit-message` skill is the
+commit-directly variant.
 
 ## Evidence Priority (STRICT)
 
@@ -34,7 +29,7 @@ If memory must be used, treat every conclusion as estimated and fallback to rule
 1. Format: `type(scope): Subject`
 2. Scope selection priority:
 
-- Use ticket/issue ID when present. The branch name check already handles this; reuse it.
+- Use the ticket/issue ID from the branch name (e.g., `PROJ-123`) when present.
 - Otherwise use a short area/module keyword.
 - If no scope applies, omit it.
 
@@ -48,17 +43,8 @@ Multi-area rule (strict):
 
 ## Type Selection (Canonical)
 
-Core policy: choose the lowest-impact valid type consistent with the diff. Standard types are: `fix`, `feat`, `refactor`, `chore`, `docs`, `test`, `ci`, `build`, `perf`, `style`, `revert`.
-
-Semver impact is implicit:
-
-- PATCH: default for fixes, refactors, chores, docs, tests, CI, build, style, perf
-
-- MINOR: `feat` only when adding new user-facing capability
-
-- MAJOR: only when breaking change criteria are met (see rule below)
-
-- Prefer `PATCH` unless clear evidence of a finished feature truly exists.
+Choose the lowest-impact valid type: `fix`, `feat`, `refactor`, `chore`, `docs`, `test`, `ci`,
+`build`, `perf`, `style`, `revert`. `feat` only for a finished, user-facing capability.
 
 ---
 
@@ -130,8 +116,6 @@ Fallback (last resort):
 
 ## AI Attribution Signing
 
-Use this guide when choosing the appropriate AI attribution signature:
-
 | AI Name | Attribution Signature |
 | - | - |
 | GitHub Copilot | `GitHub Copilot <copilot@github.com>` |
@@ -143,23 +127,10 @@ Use this guide when choosing the appropriate AI attribution signature:
 
 ---
 
-## Workflow
+## Output
 
-1. Determine evidence source using priority rules (staged preferred when available)
-2. Analyze diff for intent and affected areas
-3. Check branch name for ticket ID (e.g., PROJ-123) and use as scope if found
-4. If multiple unrelated areas are detected:
-   - Emit a recommendation to split the changes into multiple commits (outside the commit message)
-5. Choose the minimal valid type and scope (scope may already be set via branch ID)
-6. Apply breaking change rule if a prior non-draft release exists and user action is required.
-7. Choose exactly one AI attribution footer based on the deterministic rules.
-8. Write the final message to `commit.tmp`:
-   - Subject line
-   - Blank line
-   - Bullets only (no prose paragraphs)
-   - Blank line
-   - Footers
-9. Output the identical message in a code block without edits.
+1. Write to `commit.tmp`: subject · blank line · bullets only (no prose) · blank line · footers.
+2. Echo the identical message in a code block, unedited.
 
 ---
 

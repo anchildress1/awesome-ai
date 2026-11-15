@@ -30,7 +30,6 @@ Complete all of these before the first line of test code. Parallelize the reads.
 6. Read shared helpers and fixtures. Use what exists before inventing utilities.
 7. Decide which test types apply — unit, integration, e2e, performance, LHCI. Each has a
    different mock boundary.
-8. Read `CLAUDE.md` / `AGENTS.md` for project test conventions.
 
 ## Stack detection
 

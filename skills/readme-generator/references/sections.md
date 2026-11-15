@@ -1,5 +1,3 @@
-Per-section rules. Read the section before drafting it or judging an existing one.
-
 ## Title and Introduction
 
 - Include: project name as `# H1` · one- or two-sentence pitch (what + who for).
