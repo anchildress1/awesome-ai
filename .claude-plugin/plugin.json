@@ -1,8 +1,8 @@
 {
   "name": "awesome-ai",
   "displayName": "Ashley's Awesome AI",
-  "description": "Skills for commit messages, PR review triage, changelogs, READMEs, tests, and ESLint plugin config.",
-  "version": "0.1.0",
+  "description": "Skills for commit messages, PR review triage, changelogs, READMEs, tests, ESLint plugin config, and GitHub Actions workflows.",
+  "version": "0.2.0",
   "author": {
     "name": "Ashley Childress",
     "url": "https://github.com/anchildress1"
@@ -11,6 +11,6 @@
   "repository": "https://github.com/anchildress1/awesome-ai",
   "license": "MIT",
   "category": "development",
-  "keywords": ["skills", "commit-messages", "code-review", "documentation", "testing"],
+  "keywords": ["skills", "commit-messages", "code-review", "documentation", "testing", "github-actions"],
   "skills": "./skills"
 }
