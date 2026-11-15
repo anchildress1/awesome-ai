@@ -32,7 +32,7 @@ Before any edit under `.github/workflows/` or `.github/actions/`, including one-
 | Concurrency | Required on every workflow, cancel in progress |
 | Permissions | Job level only, least privilege, never `write-all` |
 | Secrets | Step-scoped, masked at runtime, never `secrets: inherit` by default |
-| Pinning | `actions/*` by major tag, everything else by SHA; versions looked up at write time |
+| Pinning | Every action by full commit SHA, GitHub's own included; versions looked up at write time |
 | Timeouts | Every job, scaled to the work |
 | Caching | Keyed off the lockfile |
 | Artifacts | Uploaded with `if: always()` and explicit retention |

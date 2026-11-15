@@ -87,7 +87,7 @@ jobs:
       code: ${{ steps.filter.outputs.code }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Detect changed paths
         id: filter
         uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
@@ -187,12 +187,13 @@ jobs:
 Resolve every version at write time, never from memory or an example:
 
 ```bash
-gh api repos/<owner>/<repo>/releases/latest --jq .tag_name
+tag=$(gh api repos/<owner>/<repo>/releases/latest --jq .tag_name)
+gh api repos/<owner>/<repo>/commits/$tag --jq .sha
 ```
 
-- `actions/*`: major tag (`@v6`).
-- Everything else: commit SHA plus version comment. Never a mutable tag (`@latest`, `@main`,
-  `@v2`) on a third-party action.
+Pin every action, `actions/*` included, to the full commit SHA plus a version comment. Never a
+mutable tag (`@latest`, `@main`, `@v7`): a moved tag runs new code with the job's token and
+secrets. Dependabot keeps the SHAs current.
 
 ```yaml
 - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
@@ -214,7 +215,7 @@ Key off a lockfile hash, never a static string. uv, Playwright, and similar: bui
 option, or `actions/cache` with a lockfile-derived key.
 
 ```yaml
-- uses: actions/setup-node@v6
+- uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
   with:
     cache: 'pnpm'
     cache-dependency-path: web/pnpm-lock.yaml
@@ -225,7 +226,7 @@ option, or `actions/cache` with a lockfile-derived key.
 `if: always()` so reports survive failed tests. Explicit `retention-days` (default is 90).
 
 ```yaml
-- uses: actions/upload-artifact@v6
+- uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
   if: always()
   with:
     name: test-report
