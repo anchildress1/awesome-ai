@@ -71,7 +71,39 @@ Success; a skipped *workflow* reports nothing.) Pick one:
 | - | - |
 | Required check | No path filter on it |
 | Path filter | Check stays optional |
-| Both | Add a second workflow with the **same `name:`** and the inverse filter that exits 0 |
+| Both | One unfiltered workflow: a `changes` job detects paths, the required job gates on its output with `if:` and reports Success when skipped |
+
+```yaml
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Detect changed paths
+        id: filter
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        with:
+          predicate-quantifier: every
+          filters: |
+            code:
+              - '**'
+              - '!docs/**'
+              - '!**/*.md'
+  build:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+```
+
+Never use a same-named second workflow with the inverse filter: a PR touching both paths runs
+both, they share the concurrency group and cancel each other, and required checks match job
+names, not workflow names.
 
 ## Concurrency
 
@@ -211,7 +243,8 @@ Disable lifecycle scripts; they run arbitrary package code on a runner holding s
 | - | - |
 | npm | `npm ci --ignore-scripts` |
 | pnpm | `pnpm install --frozen-lockfile --ignore-scripts` |
-| yarn | `yarn install --immutable --ignore-scripts` |
+| yarn (Berry, v2+) | `yarn install --immutable --mode=skip-build` |
+| yarn (Classic, v1) | `yarn install --frozen-lockfile --ignore-scripts` |
 | bun | `bun install --frozen-lockfile --ignore-scripts` |
 
 A package that needs its build script (native bindings) gets that one script as its own named
