@@ -29,9 +29,7 @@ It’s interactive, adaptive, and never generic:
 
 - **Outstanding docs save everyone’s time:** No more “what’s the rule here?” confusion.
 - **Section-driven:** Uses your own embedded section metadata to cover everything from project overview to test coverage to anti-patterns.
-- **Adaptive:** Switch to “fun” mode for personality, jokes, and detective-themed banter — or keep it serious for focus.
 - **Safe:** Never overwrites work unless the new info is genuinely better. Flags missing content clearly, never invents, never assumes.
-- **Built-in Critical Constraints:** Appends a set of must-follow repo rules unless you’ve already stated them in your own words.
 
 ---
 
@@ -45,7 +43,6 @@ It’s interactive, adaptive, and never generic:
    - Lets you skip sections by typing `skip` — marking them as `(TBD)` if required.
    - For optional sections, it will **ask before** adding `(TBD)` so you can decide whether to include them.
 4. Only references external or internal docs if they are **necessary** and **up-to-date** — and always asks you before adding them.
-5. Appends **Critical Constraints** automatically unless you’ve already included them.
 
 ---
 
@@ -99,7 +96,7 @@ If you haven’t already specified these in your own way, they’ll be added aut
 ## Recommended Use 🏆
 
 - Ideal for repo maintainers, onboarding, and anyone who hates repeating themselves
-- Works great in Agent Mode or Copilot Chat in VS Code (Markdown or XML)
+- Works great in Agent Mode or Copilot Chat in VS Code
 - Fun for detective show fans (Will Trent, The Mentalist… just don’t ask for a badge)
 
 ---

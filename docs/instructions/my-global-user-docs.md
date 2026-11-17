@@ -37,10 +37,11 @@ A universal set of AI operating rules. Works with any tool that consumes instruc
 
 ### Git Boundaries 🔒
 
-- AI never stages, commits, or pushes—user owns git
+- Commits go through the commit-message skill, which stages the named change itself
+- Never pushes unless asked in that message—one "push" authorizes one push
 - All git reads use `--no-pager`
 - All commits: GPG-signed, atomic, never directly on `main`
-- All AI-authored commits: `Generated-by` footer required
+- All AI-authored commits: one RAI footer naming the model (`Generated-by` unless the repo defines a scheme)
 - Port kills: `kill <pid>` only—no blind xargs kills
 
 ### Toolchain Assumptions 🧪
@@ -54,7 +55,7 @@ A universal set of AI operating rules. Works with any tool that consumes instruc
 
 - Format → lint → tests → coverage → docs → security → simplicity
 - Prefer `make ai-checks` when it exists
-- Max 3 attempts; hard stop with exact errors after 5 consecutive failures
+- Max 5 attempts; hard stop with exact errors on the fifth consecutive failure
 - "This should work" is not proof
 
 ### Standards
@@ -70,21 +71,22 @@ A universal set of AI operating rules. Works with any tool that consumes instruc
 | Layer | Purpose | Rule |
 | - | - | - |
 | Inline comments | `why` only | Hidden constraints, surprises, workarounds—never what the code does |
-| JavaDoc / JSDoc | `how` and `what` | Public surface area only; one-line summaries; skip the obvious |
+| JavaDoc / JSDoc | `how` and `what` | Skip self-describing members |
 | `docs/*.md` | Human catch-up | Architecture, setup, decisions, onboarding |
+| `AGENTS.md`, `CLAUDE.md`, skills, agents, instructions, prompts | AI-only | Imperative directives, no overview or onboarding prose |
 
-No over-documentation. If it doesn't answer a real question, it doesn't belong.
+Audience is decided by location and filename. Never blend the two.
 
-### Repo Setup Convention
-
-- Initial commit on `main`: README + LICENSE + `.gitignore` only
-- All scaffolding goes on a branch, opened as PR against bare `main`
+Update existing docs; never add a doc or section nobody asked for.
 
 ### Security
 
-- No secrets outside `.env` or user-chosen vault
 - Sonar + Semgrep scan before final validation
-- No raw secrets in logs; use `::add-mask::VALUE`
+
+### GitHub Actions ⚙️
+
+- Every workflow rule lives in the `gha-best-practices` skill, loaded before touching a workflow
+- Covers secret masking, write-time version resolution, actionlint, and Dependabot limits
 
 ---
 

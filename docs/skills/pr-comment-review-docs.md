@@ -51,8 +51,7 @@ The skill degrades loudly rather than silently, but it needs all of this to do i
 gh auth status
 ```
 
-Token scopes must include **`repo`** and **`read:org`**. Without `read:org` the bot-installation
-check in Step 2 returns nothing useful.
+Token scopes must include **`repo`**.
 
 ### 2. Copilot code review
 
@@ -115,7 +114,8 @@ gh api -X GET search/issues \
 > A `0` means **no prior comments**, not "not installed." A freshly installed app returns the same
 > `0` until its first eligible PR — this repo returned `0` for Codex right up until Codex reviewed
 > [#20](https://github.com/anchildress1/awesome-ai/pull/20). To check installation for
-> real, use `gh api repos/{owner}/{repo}/installation` or the repo's settings.
+> real, look at **Settings → GitHub Apps** — `repos/{owner}/{repo}/installation` needs a GitHub
+> App JWT and returns `401` to a normal `gh` login.
 
 ---
 

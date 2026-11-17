@@ -8,35 +8,12 @@ This generator creates a Conventional Commit message from your repository change
 
 ## How to use 📝
 
-- Stage the changes you want included in the commit (recommended). The generator prefers staged changes but can fall back to all local changes if needed.
-- Run the generator (via the repository's Copilot workflow). It will attempt to collect changed files and draft a conventional commit message for you.
-
-## What the generator does ⚙️
-
-- It checks that required capabilities are available to analyze changes.
-- If any helper is unavailable, you'll receive a brief chat warning listing only the missing helper(s). This is informational — the generator will continue and produce best-effort output.
-- The generator analyzes the changes, infers intent (fix/feat/refactor), estimates AI contribution for the RAI footer, and drafts a concise Conventional Commit message that respects repo lint rules when present.
-- The final message is written to `commit.tmp` and also shown in chat so you can copy or edit it before committing.
-
-## Troubleshooting & notes 🛠️
-
-- If file collection fails, the generator will stop and report the problem — fix the error and try again.
-- The RAI attribution footer is required. If a diff-analysis tool is unavailable, the generator will include a short disclaimer that attribution is an estimate based on conversation context.
-- If your project enforces commit linting, the generator will try to follow discovered lint rules; you should still verify the message meets your linter before committing.
-
-## Note on Commit Linting 📏
-
-The AI will search for any existing commit lint rules in the repository. If found, it will suggest to the user adding a reference to the relevant instructions (e.g., design principles or logging best practices) to ensure compliance.
+- Stage the changes you want included (recommended). It reads the staged diff first, then the working tree, and falls back to chat memory only when no diff is available.
+- Run the prompt in Copilot Chat. The message is written to `commit.tmp` and shown in chat so you can edit it before committing.
+- Touched unrelated areas? It recommends a split instead of writing a catch-all subject.
+- Still check the message against your commit linter before committing.
 
 > Good commits tell the truth about what changed and who helped.
-
----
-
-## Why This Exists 💡
-
-When GitHub changed the rules, the original multi-step prompt became irrelevant. Copilot doesn’t need training wheels anymore — it just needs the same thing we do: guardrails.
-
-This version keeps those. The format, the tone, and the responsibility stay. Everything else got cut, because all it ever needed to do was make clear, traceable history.
 
 ---
 
@@ -44,16 +21,14 @@ This version keeps those. The format, the tone, and the responsibility stay. Eve
 
 Every commit that used AI to get there should say so. That’s not a disclaimer — it’s context about who contributed what.
 
-Choose exactly one footer that best describes the AI's role. Higher-level attributions take precedence:
+Exactly one footer, based on the share of changed lines the AI wrote. Unsure between two brackets → it picks the higher one:
 
-- **Generated-by**: AI created most of the code (roughly 67-100% AI-written) — the AI wrote all the modified or added code, even if it involved refactoring existing logic
-- **Co-authored-by**: AI substantially contributed (roughly 34-66% AI-written) — major AI help with refactoring or new features
-- **Assisted-by**: AI made minor edits (roughly 3-33% AI-written) — small fixes or improvements
-- **Commit-generated-by**: AI only wrote the commit message — no code changes, just the message itself
+- **Generated-by**: 60% or more
+- **Co-authored-by**: 25–59%
+- **Assisted-by**: 1–24%
+- **Commit-generated-by**: AI only wrote the message
 
-Format: `<type>: GitHub Copilot <github.copilot@github.com>`
-
-If you haven’t read it yet, the [RAI section of my blog post](https://dev.to/anchildress1/can-we-set-the-record-straight-ai-content-and-a-bit-of-sanity-1inj#5-ai-code-is-ai-content-writers-you-too) walks through why that matters and why I’m not budging on it. This isn’t about permission. *It’s about provenance.*
+Format: `<Trailer>: GitHub Copilot <copilot@github.com>` (the prompt carries signatures for other assistants too)
 
 ---
 
@@ -67,7 +42,7 @@ When your changes relate to a Jira ticket or issue, the generator will use the J
 - `fix(DEVOPS-456): resolve database connection timeout`
 - `refactor(UI-789): simplify component structure`
 
-If no Jira key is found in the branch name or commit context, the scope will use a one-word area description instead (e.g., `feat(auth): add login validation`).
+If no Jira key is found, the scope falls back to a short area keyword (e.g., `feat(auth): add login validation`), or is omitted when nothing fits.
 
 **Footer Relationships** (when explicitly needed):
 
@@ -90,10 +65,8 @@ feat(DEVOPS-2025): introduce incremental indexer with content dedupe
 - Add comprehensive test coverage for indexer and repository layers
 - Update design notes and runbook to reflect the streamlined flow
 
-Co-authored-by: GitHub Copilot <github.copilot@github.com>
+Co-authored-by: GitHub Copilot <copilot@github.com>
 ```
-
-That message gets written to `commit.tmp` and echoed right back in chat — ready to use, or tweak, or question out loud if you want to see how honest it feels.
 
 ---
 

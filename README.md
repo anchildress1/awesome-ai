@@ -30,7 +30,7 @@ Questions or ideas? Socials are on my profile. 🦄
 
 ---
 
-Welcome to my collection of **Custom Instructions, Prompts, and Agents (formerly Chat Modes)** — your one-stop shop for uniquely crafted, slightly over-caffeinated GitHub Copilot personalities. Built for creative chaos, workflow upgrades, and the occasional emergency refactor.
+Welcome to my collection of **Custom Instructions, Prompts, Agents (formerly Chat Modes), and Skills** — your one-stop shop for uniquely crafted, slightly over-caffeinated GitHub Copilot personalities. Built for creative chaos, workflow upgrades, and the occasional emergency refactor.
 
 Each mode here is handcrafted by me, with ChatGPT running background triage, Copilot chiming in like a backseat developer who just learned linting, and Claude fact-checking all of us at 2am. I borrow inspiration from others (and always credit), but every piece is reshaped with my own twist.
 
@@ -59,18 +59,6 @@ For fearlessly testing from day one, breaking *everything* (with love), and stil
 
 You lit the fuse with a simple idea that I immediately overengineered into something unrecognizable.
 Your clarity, sense of scale, and focus on what’s *useful* still anchor this entire thing. None of it would exist without that spark.
-
----
-
-# The `.github/` Directory 📚
-
-Welcome to the heart of the repo — automation, docs, and the creative wiring that powers every Copilot experiment. Inside you’ll find the core configuration files and templates that make collaboration (and a little mischief) possible.
-
-Looking for reusable prompts, custom agent personas, or fabulous instructions? They all live here. For the deep library, check out the [`docs/`](./docs/) folder.
-
-Each file follows the same badge lifecycle — so you’ll know exactly what you’re getting into before you summon the intern AI again.
-
-> 🦄 This repo thrives on creative chaos and helpful automation. Start here, and everything else starts to make sense.
 
 ---
 
@@ -110,8 +98,6 @@ Each one knows which tools to summon (`#changes`, `#editFiles`, `#runInTerminal`
 
 Custom AI "personalities with a purpose" for Copilot Chat and MCP. They’re all designed for creative chaos, workflow clarity, and the occasional existential debugging crisis.
 
-> 🦄 If it feels too wild, relax—it’s not exactly *The Pitt*. I'm just making sure you're awake.
-
 | Name | Status | Purpose | Notes |
 | - | :-: | - | - |
 | [`hlbpa`](./agents/hlbpa.agent.md) (High-Level Big-Picture Architect) | [![Status: Polish (purple badge)](https://img.shields.io/badge/status-polish-9B5DE5.svg)](./docs/agents/hlbpa-docs.md) | Configure Copilot Chat (or any AI/MCP extension host) to act as a Principal Systems Architect focused on high-level, architectural **documentation and review**. | Not designed to write code or tests. <br>**Note:** This also lives in [awesome-copilot](https://github.com/github/awesome-copilot) repo. |
@@ -130,10 +116,11 @@ Skills are small, reusable playbooks you can hand to an agent when you want cons
 | Name | Status | Purpose | Notes |
 | - | :-: | - | - |
 | [`changelog-writer`](./skills/changelog-writer/SKILL.md) | [![Status: Draft (pink badge)](https://img.shields.io/badge/status-draft-F72585.svg)](./docs/skills/changelog-writer-docs.md) | Rewrite `CHANGELOG.md` entries into the repo’s dry, narrative style (with formatting guardrails) | No commit/PR archaeology. No corporate tone. Just readable history. |
-| [`generate-commit-message`](./skills/generate-commit-message/SKILL.md) | [![Status: Check (blue badge)](https://img.shields.io/badge/status-check-3A86FF.svg)](./docs/skills/generate-commit-message-docs.md) | Generate a Conventional Commit message from diff evidence and **make the signed commit** | Deterministic formatting, commits only what you staged, never pushes, AI attribution included. |
+| [`generate-commit-message`](./skills/generate-commit-message/SKILL.md) | [![Status: Check (blue badge)](https://img.shields.io/badge/status-check-3A86FF.svg)](./docs/skills/generate-commit-message-docs.md) | Generate a Conventional Commit message from diff evidence and **make the signed commit** | Deterministic formatting, stages only the change you name, never pushes, AI attribution included. |
 | [`eslint-plugin-configuring`](./skills/eslint-plugin-configuring/SKILL.md) | [![Status: Draft (pink badge)](https://img.shields.io/badge/status-draft-F72585.svg)](./docs/skills/eslint-plugin-configuring-docs.md) | Generate or update ESLint plugins with dual config support (v8 legacy and v9 flat) | I needed to throw one together anyway, so why not do this first? |
 | [`test-writer`](./skills/test-writer/SKILL.md) | [![Status: Ready (green badge)](https://img.shields.io/badge/status-ready-007F5F.svg)](./docs/skills/test-writer-docs.md) | Write, extend, or audit tests in any language, any framework, any repo | No `.skip`, no lowered thresholds, no copy-paste bodies. Every path, every time. |
 | [`readme-generator`](./skills/readme-generator/SKILL.md) | [![Status: Ready (green badge)](https://img.shields.io/badge/status-ready-007F5F.svg)](./docs/skills/readme-generator-docs.md) | Generate, audit, or improve a project README following a 15-section structure with Mermaid diagrams | Intent-driven section selection. No generic filler. No badge decoration. |
 | [`pr-comment-review`](./skills/pr-comment-review/SKILL.md) | [![Status: Polish (purple badge)](https://img.shields.io/badge/status-polish-9B5DE5.svg)](./docs/skills/pr-comment-review-docs.md) | Audit and remediate an open PR's review feedback until every thread has an outcome | Fix or a real reason. "Nitpick" isn't a reason. Never pushes on its own. |
+| [`gha-best-practices`](./skills/gha-best-practices/SKILL.md) | [![Status: Check (blue badge)](https://img.shields.io/badge/status-check-3A86FF.svg)](./docs/skills/gha-best-practices-docs.md) | GitHub Actions rules: triggers, permissions, secrets, pinning, timeouts, caching, Dependabot | Fewer leaked secrets, fewer burned minutes, no required check stuck on `Pending`. |
 
 <small>Generated with a highly suspicious amount of help from ChatGPT, GitHub Copilot, and Claude — directed, corrected, and occasionally overruled by Ashley Childress.</small>

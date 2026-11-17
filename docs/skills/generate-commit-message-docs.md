@@ -14,11 +14,12 @@ Skill source: [`skills/generate-commit-message/SKILL.md`](../../skills/generate-
 
 ## What It Does 🛠️
 
-1. Reads the staged diff — only the staged diff, since that's exactly what the commit will contain
-2. Infers type, scope, and body strictly from hunks — not from chat history
-3. Picks one AI-attribution trailer based on who actually did the work
-4. Validates against commitlint rules *and* the repo's own config
-5. Runs `git commit -S` on what's already staged
+1. Stages the change you named if nothing is staged yet; otherwise commits exactly what you staged
+2. Reads the staged diff — only the staged diff, since that's exactly what the commit will contain
+3. Infers type, scope, and body strictly from hunks — not from chat history
+4. Picks one AI-attribution trailer based on who actually did the work
+5. Validates against commitlint rules *and* the repo's own config
+6. Runs `git commit -S`
 
 There's one mode: it commits. Earlier versions drafted to a `commit.tmp` file first — that step
 is gone. If the commit can't happen, the message gets printed in chat instead of orphaned in an
@@ -29,8 +30,8 @@ untracked file you'll find three weeks later.
 ## How to Use It 📝
 
 1. Make your changes
-2. **Stage them yourself** — this is the important one
-3. Say `commit this`, `go ahead and commit`, or `/generate-commit-message`
+2. Say `commit this`, `commit the auth work`, `go ahead and commit`, or `/generate-commit-message`
+3. Want to split a messy tree? Say `make atomic commits` and it commits one logical change at a time
 
 > [!WARNING]
 > Don't reach for this one when you only want to *see* a message. It has no preview mode — every
@@ -39,8 +40,9 @@ untracked file you'll find three weeks later.
 > ([docs](../prompts/generate-commit-message-docs.md)).
 
 > [!IMPORTANT]
-> The skill never runs `git add`. What you stage is what gets committed — that boundary is what
-> lets it commit without asking you to review scope first. Nothing staged means it stops.
+> Staging is by explicit path only — never `git add -A` or `.`. If you already staged something,
+> it commits exactly that and stages nothing extra. If unrelated edits are sitting in the tree,
+> it lists them and asks instead of guessing.
 
 Optionally pass an issue key: `/generate-commit-message PROJ-123`.
 
@@ -48,7 +50,8 @@ Optionally pass an issue key: `/generate-commit-message PROJ-123`.
 
 ## When It Refuses 🛑
 
-- **Nothing staged.** It won't stage for you and won't guess what you meant to include.
+- **Nothing staged and no change named.** A bare "commit" over a tree with several changes gets a
+  question, not a guess.
 - **You're on `main`/`master`.** Branch first, or say explicitly to commit there in the same
   message.
 - **The diff changed mid-flight.** It re-reads the diff right before committing; if it moved, the
@@ -70,7 +73,7 @@ Follows [Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/v1.
 | **Body** | One blank line after subject; single-line bullets ≤ 100 chars; *what* and *why*, never *how* |
 | **Footers** | One blank line before; order is issue refs → `BREAKING CHANGE` → AI attribution |
 
-Breaking changes take either form, or both: `feat(api)!:` when the break is self-evident,
+Breaking changes take either form, or both: `feat!:` when the break is self-evident,
 `BREAKING CHANGE: <migration note>` when the user needs explicit steps.
 
 > [!TIP]
@@ -145,7 +148,7 @@ Generated-by: Claude Opus 5 <noreply@anthropic.com>
 ```
 
 ```text
-feat(api)!: drop deprecated /v1 endpoints
+feat(PROJ-456)!: drop deprecated /v1 endpoints
 
 - remove /v1/users and /v1/sessions handlers
 - migrate fixture suite to /v2 equivalents
@@ -162,5 +165,5 @@ Generated-by: Claude Opus 5 <noreply@anthropic.com>
 - The message is passed via `git commit -F -`, not `-m` — heredocs preserve blank lines and
   trailers that `-m` mangles.
 - It never pushes. That's a separate decision, made by you.
-- If you touched several unrelated areas, the right answer is usually "split your commits." The
-  skill won't write a message that pretends they're one change.
+- Several unrelated areas in one tree → ask for atomic commits. The skill won't write a message
+  that pretends they're one change.

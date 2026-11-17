@@ -47,24 +47,6 @@ The skill is opinionated about avoiding ambiguity—it enforces strict naming ru
 
 ---
 
-## Flat vs Legacy Config Shapes 🏗️
-
-**Flat config** (ESLint v9):
-
-- Exported as an array of config objects
-- Plugin registered via object form: `plugins: { [namespace]: plugin }`
-- Rules enabled using namespaced keys
-
-**Legacy config** (ESLint v8):
-
-- Exported as a plain eslintrc object
-- Plugin registered via array: `plugins: ["namespace"]`
-- Rules enabled using namespaced keys
-
-The skill handles both and generates consumer examples for each.
-
----
-
 ## How to Use It 📝
 
 Tell your agent to use this skill when you need to create a new ESLint plugin or update an existing one.
@@ -87,7 +69,7 @@ If your agent misses details, be explicit:
 
 - The skill includes a **validation checklist** to fail-fast on common mistakes (missing namespace, wrong config shapes, v8/v9 confusion).
 - The skill provides **pattern templates** for the plugin skeleton and config assignment to prevent self-reference bugs.
-- Consumer examples in the skill show both `eslint.config.js` (flat) and `.eslintrc` (legacy) patterns side-by-side for clarity.
+- Flat configs export as arrays and register the plugin as an object (`plugins: { [namespace]: plugin }`); legacy configs export as plain eslintrc objects and register it as an array (`plugins: ["namespace"]`).
 - If you're repairing an existing plugin, the skill explains how to add missing pieces (flat config support, namespace, etc.) without breaking users.
 
 ---

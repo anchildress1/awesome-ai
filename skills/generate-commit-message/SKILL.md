@@ -4,9 +4,10 @@ name: generate-commit-message
 description: >
   Derive one Conventional Commits v1.0.0 message from the staged diff and create the signed commit
   directly. Trigger only on explicit intent to commit: "commit this", "commit these changes",
-  "/commit", "go ahead and commit", "make the commit", "git commit", or a confirmation like "yes,
-  commit it". Enforces the type enum, 72-char subject, 100-char body/footer lines, and a required
-  AI-attribution trailer, so the result passes commitlint on the first try. Do NOT trigger on
+  "/commit", "go ahead and commit", "make the commit", "git commit", "make atomic commits", "split
+  this into commits", or a confirmation like "yes, commit it". Enforces the type enum, 72-char
+  subject, 100-char body/footer lines, and a required AI-attribution trailer, so the result passes
+  commitlint on the first try. Do NOT trigger on
   message-only questions ("write a commit message", "what should the commit message be") — this
   skill's only output path is a real commit, and answering those with one records work the user
   merely asked to preview.
@@ -17,18 +18,20 @@ user-invocable: true
 ---
 
 Produce exactly one Conventional Commits v1.0.0 message from the diff, then commit it signed.
-The commit is the deliverable — no draft file, no staging, no push.
+The commit is the deliverable — no draft file, no push.
 
 ## Boundaries
 
-The only repo-mutating command permitted is `git commit -S`. Everything else is off-limits:
+The only repo-mutating commands permitted are `git commit -S` and path-explicit `git add` under
+[Staging](#staging). Everything else is off-limits:
 
 | Never | Why |
 | - | - |
-| `git add` / stage anything | Commit scope is the user's decision, already expressed by what's staged |
+| Add to a non-empty index | A staged diff is the user's scope decision; commit exactly it |
+| `git add -A` / `.` / `-u` / globs | Sweeps unrelated edits into the commit |
 | `git push`, `rebase`, `reset`, `commit --amend` | History mutation isn't this skill's job |
 | `--no-verify`, `--no-gpg-sign` | Hooks and signing must run |
-| Edit source, docs, or config | No formatters, lint fixes, refactors, or test runs |
+| Edit source, docs, or config | No formatters, lint fixes, refactors, or test runs. Sole exception: the temporary revert-and-restore in [Splitting](#splitting-one-working-tree-into-atomic-commits), which must end byte-identical to the saved copy |
 | Commit on `main`/`master` | Unless the user directed it **this turn** |
 | Omit the AI-attribution trailer | A message without it is a failed message |
 
@@ -36,9 +39,35 @@ The only repo-mutating command permitted is `git commit -S`. Everything else is 
 
 Stop and report; do not work around:
 
-- No staged diff → `nothing staged`. Do not stage on the user's behalf.
+- No staged diff and the request names no work to commit ("commit" alone, tree holds several
+  changes) → `nothing staged`; ask which change.
 - On `main`/`master` without explicit authorization this turn.
 - Diff changed between derivation and commit (see step 5).
+
+## Staging
+
+Only when the index is empty.
+
+- Stage by explicit path every file — tracked and untracked — that belongs to the change the user
+  named this turn ("commit the fiji work", "commit this").
+- Dirty paths outside that change, or a file mixing it with another concern → stop, list them, ask.
+  A pre-commit hook that re-stages fixed files can sweep unstaged edits into the commit.
+- Report the staged paths with the SHA.
+
+## Splitting one working tree into atomic commits
+
+Only on an explicit request this turn.
+
+Run steps 1–7 once per group, deriving each message from that group's staged diff alone.
+
+- One logical change per commit. A subject that needs "and" is two commits.
+- Every commit stands alone: the tree builds and imports resolve at **each** SHA, not just at the
+  tip. Verify before moving to the next group.
+- Never hand-split hunks in a file carrying two concerns — that is where work silently disappears.
+  Instead: copy the finished files outside the repo, revert the *other* concern out of the file and
+  commit, restore the copy and commit the remainder, then diff the tree against the copy. A
+  non-empty diff means the split dropped work.
+- Report every SHA and subject, not just the last.
 
 ## 1. Resolve scope
 
@@ -58,9 +87,8 @@ correct; a made-up one is noise. The diff informs type and subject, never scope.
 git --no-pager diff --cached
 ```
 
-Empty → abort. There is no working-tree fallback: `git commit` records the index, so a message
-derived from unstaged edits would describe changes the commit doesn't contain — and the commit
-would fail anyway with nothing staged.
+Empty → run [Staging](#staging), then re-run this command. Never derive from `git diff` of the
+working tree: `git commit` records the index, so unstaged edits are not in the commit.
 
 Derive everything from hunks only: chat history, prior commits, and memory are not evidence of
 what this diff changes.

@@ -54,10 +54,6 @@ spec:
 
 > Ship it now before someone demands Helm charts
 
-### XML Coding Agent
-
-Pragmatist also has an XML version for Copilot Coding Agent. See the `.xml` file in this repo for details.
-
 ---
 
 <!-- Generated with the help of ChatGPT as directed by Ashley Childress -->

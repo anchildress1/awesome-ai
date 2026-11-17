@@ -1,7 +1,7 @@
 ---
 status: draft
 name: changelog-writer
-description: Rewrites changelog entries with cheeky, narrative flair following project conventions. Use this when asked to rewrite or update CHANGELOG.md entries.
+description: Use when asked to rewrite or update `CHANGELOG.md` entries. Produces narrative, dry-humor release notes matching the file's existing voice; never edits outside the targeted section.
 ---
 
 Read `CHANGELOG.md` first and match its established voice. The file's own precedent beats

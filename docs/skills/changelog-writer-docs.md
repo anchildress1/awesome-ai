@@ -35,13 +35,13 @@ It enforces the formatting rules (version headers, compare links, dates, emojis)
 **Body structure** depends on the release type:
 
 - **Single-fix patch:** quote + short narrative paragraph. No bullet lists.
-- **Multi-change release:** quote + optional "Highlights" section (bold claims with explanations) + closing paragraph.
+- **Multi-change release:** quote + "Highlights" section (bold claims with explanations) + closing paragraph.
+- **Breaking changes:** never omitted. Stable releases get an unmissable header; pre-v1 and prereleases get a sardonic one.
 
 **What the skill won't do:**
 
 - Enumerate commit SHAs or PR numbers in the body
 - Use corporate tone or marketing speak
-- Add "Breaking changes" sections (prerelease = no breaking changes)
 - Invent features that don't exist
 
 > [!TIP]
@@ -57,17 +57,13 @@ Tell your agent (Copilot, Claude, whatever) to use the skill file when rewriting
 - "Use the changelog skill to clean up the latest release entry — keep the version and date, just fix the prose."
 - "Don't add PR numbers, don't add commit SHAs, and definitely don't make it sound like marketing wrote it."
 
-If your agent starts freelancing (adding sections you didn't ask for, changing version numbers, whatever), add explicit constraints:
-
-- “Don’t change the version number or date.”
-- “Only rewrite text; do not add new sections beyond what the skill allows.”
-- “Keep the compare URL format as-is unless it’s broken.”
+If your agent starts freelancing (changing version numbers, adding sections), say so explicitly: “Don’t change the version number or date.”
 
 ## Practical Notes 🧰
 
-- The skill explicitly requires preserving existing `CHANGELOG.md` content *below* the section being rewritten.
-- The skill requires a GitHub compare link in the version header. It doesn't mandate one canonical URL style—match whatever your changelog already uses.
-- The skill is intentionally not an audit trail. It forbids commit/PR enumeration in the body; if you need forensics, use `git log`.
+- Nothing outside the section being rewritten gets touched.
+- The compare link is required, but its URL style matches whatever your changelog already uses.
+- Not an audit trail. If you need forensics, use `git log`.
 
 ---
 

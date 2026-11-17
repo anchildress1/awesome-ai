@@ -17,20 +17,21 @@ Repo convention beats every preference below. Exception: the hard rules always w
 
 Complete all of these before the first line of test code. Parallelize the reads.
 
-1. Read the source under test **completely**. Map every branch, early return, validation,
+1. Read any `AGENTS.md` / `CLAUDE.md` in the directories under test that is not already in
+   context.
+2. Read the source under test **completely**. Map every branch, early return, validation,
    and error path.
-2. Detect the framework (table below).
-3. Find the test command — `package.json` `scripts.test`, `Makefile`, `pyproject.toml`,
+3. Detect the framework (table below).
+4. Find the test command — `package.json` `scripts.test`, `Makefile`, `pyproject.toml`,
    or CI config. Required for the final verification step.
-4. Read existing tests for the module. Extract mock patterns, fixture shapes, naming. New
+5. Read existing tests for the module. Extract mock patterns, fixture shapes, naming. New
    tests must match them. None exist → check for `tests/` or `__tests__/`; if neither,
    create one mirroring the source tree.
-5. Read the test config (`vitest.config.ts`, `jest.config.ts`, `pytest.ini`,
+6. Read the test config (`vitest.config.ts`, `jest.config.ts`, `pytest.ini`,
    `pyproject.toml`). Note coverage thresholds and exclusions.
-6. Read shared helpers and fixtures. Use what exists before inventing utilities.
-7. Decide which test types apply — unit, integration, e2e, performance, LHCI. Each has a
+7. Read shared helpers and fixtures. Use what exists before inventing utilities.
+8. Decide which test types apply — unit, integration, e2e, performance, LHCI. Each has a
    different mock boundary.
-8. Read `CLAUDE.md` / `AGENTS.md` for project test conventions.
 
 ## Stack detection
 

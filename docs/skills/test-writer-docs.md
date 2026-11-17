@@ -33,7 +33,6 @@ Before writing a single line, it orients—in parallel:
 5. Reads test config for coverage thresholds and excluded paths
 6. Reads shared test helpers and fixtures—uses what exists before inventing anything
 7. Identifies which test types apply: unit, integration, e2e, performance, LHCI
-8. Reads `CLAUDE.md` / `AGENTS.md` for project-specific conventions
 
 Then it writes. Then it runs. Then it verifies.
 
@@ -130,5 +129,3 @@ The skill won't declare done until:
 
 - File placement and naming follow the repo's existing convention—it reads before placing
 - When no test files exist, it bootstraps a structure mirroring the source tree
-- It never edits coverage config to make tests pass—that's not a fix
-- It never adjusts assertions to match wrong behavior—that's documenting a bug, not catching one

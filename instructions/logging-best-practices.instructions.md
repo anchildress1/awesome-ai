@@ -4,67 +4,46 @@ description: "A language-agnostic, Copilot-ready checklist for secure, structure
 applyTo: "**"
 ---
 
-# Logging Best Practices 🧾
+Scope: application logging, not infrastructure.
 
-A language-agnostic, Copilot-ready checklist for secure, structured, and scalable logging inside applications — not infrastructure.
+## Agent behavior
 
----
+- Check for a centralized logger before inserting one.
+- Insert logs only; never rewrite logic.
+- Scoped changes, never global.
+- Summarize changes grouped by intent (e.g., "3 trace logs added").
 
-## Do This ✅
+## Rules
 
-### Use Structured Logging 🧱
+- Structured JSON with `timestamp`, `severity`, `message`, and context (`requestId`, `userId`,
+  `service`, module, function).
+- Levels driven by environment or DI config (`LOG_LEVEL`), never hardcoded.
+- Mask or omit PII, tokens, and secrets; scrub payloads before logging them.
 
-- Format logs as **JSON** wherever possible
-- Include: `timestamp`, `severity`, `message`, `contextual fields` (e.g. `requestId`, `userId`, `service`, etc.)
+| Level | Use for |
+| - | - |
+| TRACE | Step-by-step debugging; never in prod |
+| DEBUG | Method entry/exit, variable values |
+| INFO | Major events, milestones, API requests |
+| WARN | Unusual but non-fatal conditions |
+| ERROR | Failures that degrade service |
+| FATAL | Crashes, unrecoverable errors |
 
-### Apply Proper Log Levels 🎚️
+Never:
 
-- **TRACE**: For step-by-step debugging, not for prod
-- **DEBUG**: Method entry/exit, variable values, etc.
-- **INFO**: Major events, milestones, API requests
-- **WARN**: Unusual but non-fatal conditions
-- **ERROR**: Failures that degrade service
-- **FATAL**: Crashes, unrecoverable errors
+- `print()`, `console.log`, or raw output functions
+- Duplicate or excessive logging of one event
+- Stack traces at `INFO` or lower
 
-### Add Context to Every Entry 🕵️‍♂️
-
-- Include trace/correlation/request IDs
-- Include service/module names
-- Include method or function names if possible
-
-### Control Log Levels at Runtime 🔀
-
-- Respect environment-level overrides (e.g. `LOG_LEVEL` env var)
-- Use DI-based logging config if possible
-
-### Protect Sensitive Data 🧼
-
-- Mask or omit PII (e.g., SSNs, full account numbers)
-- Avoid logging authentication tokens or secrets
-
----
-
-## Don't Do This ❌
-
-- Don’t use `print()`, `console.log`, or raw output functions
-- Don’t over-log or duplicate the same event
-- Don’t log stack traces at `INFO` or lower
-- Don’t hardcode log levels — use environment or config-driven control
-- Don’t log sensitive payloads unless explicitly scrubbed
-
----
-
-## Examples (in multiple languages) 🧪
-
-### Java (SLF4J + Logback) ☕
+## Examples
 
 ```java
+// SLF4J + Logback
 logger.info("Order processed", kv("orderId", orderId), kv("status", "confirmed"));
 ```
 
-### Node.js (Winston) 🟢
-
 ```js
+// Winston
 logger.info({
   message: "User login",
   userId: req.user.id,
@@ -72,22 +51,7 @@ logger.info({
 });
 ```
 
-### Python (`structlog`) 🐍
-
 ```python
+# structlog
 logger.info("email_sent", request_id=request_id, recipient=email, duration_ms=123)
 ```
-
----
-
-## Summary for Copilot Execution 🧠
-
-- Always assume logs must be structured
-- Always check for centralized logger presence before inserting one
-- Do not rewrite logic — only insert logs
-- Default to scoped logging, not global
-- Summarize changes grouped by log intent (e.g. "3 trace logs added")
-
----
-
-<!-- This file was generated with ChatGPT as directed by Ashley Childress -->
